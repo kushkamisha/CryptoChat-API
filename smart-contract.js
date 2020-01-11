@@ -28,10 +28,6 @@ module.exports = class Contract {
         return this.__send(sender, privateKey, 'transfer', [recipient, amount])
     }
 
-    // deposit(sender, privateKey, ) {
-    //     return this.__send(sender, privateKey, 'deposit', [], value)
-    // }
-
     withdraw(sender, privateKey, amount) {
         return this.__send(sender, privateKey, 'withdraw', [amount])
     }
