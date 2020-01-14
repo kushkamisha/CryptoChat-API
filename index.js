@@ -1,31 +1,20 @@
 'use strict'
 
-const fs = require('fs')
+const path = require('path')
+const { handleWeb3Error } = require('./utils')
 const Web3 = require('web3')
 // const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0ad545128d1244dfb79b68cbf4c36b7c'))
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
 const abi = require('ethereumjs-abi')
-const path = require('path')
-const rlp = require('rlp')
 const txDecoder = require('ethereum-tx-decoder')
 const Contract = require('./smart-contract')
 
 // const gas = await web3.eth.getGasPrice()
-const contract = new Contract('abi.json', '0x24FbBB41074552a8Daea6a574A01F3324A8c11BA')
+const contract = new Contract(path.join('data', 'abi.json'), '0x24FbBB41074552a8Daea6a574A01F3324A8c11BA')
 
 // Create an address
 // const { address, privateKey, signTransaction, sign, encrypt } = web3.eth.accounts.create()
 // console.log({ address, privateKey, signTransaction, sign, encrypt })
- 
-let address = '0xBd670c480DE5F6FE13a649dbc13Ed52A33251edF'
-contract.balanceOf(address)
-    .then(bal =>
-        console.log(`Balance of ${address} is ${web3.utils.fromWei(bal)} Ether`))
-
-address = '0xbc99f9A7A24252239D318C31De697e38635566E5'
-contract.balanceOf(address)
-    .then(bal =>
-        console.log(`Balance of ${address} is ${web3.utils.fromWei(bal)} Ether`))
 
 // contract.withdraw(
 //     '0xBd670c480DE5F6FE13a649dbc13Ed52A33251edF',
@@ -43,7 +32,7 @@ contract.transfer(
     '0xbc99f9A7A24252239D318C31De697e38635566E5',
     '3711613e3e796754e50c0bc1be237ce603600ec7b77744f72b60a284690f1c29',
     '0xBd670c480DE5F6FE13a649dbc13Ed52A33251edF',
-    web3.utils.toWei('8.00034', 'ether')
+    web3.utils.toWei('1', 'ether')
 ).then(tx => {
     // console.log(tx)
 
@@ -58,9 +47,20 @@ contract.transfer(
     console.log(`Is the signer address correct? ${verifySigner(
         '0xbc99f9A7A24252239D318C31De697e38635566E5', tx) ?
         'yes' : 'no'
-        }\n`)
+    }\n`)
 
-    // web3.eth.sendSignedTransaction(tx.rawTransaction)
+    showBalances()
+
+    web3.eth.sendSignedTransaction(tx.rawTransaction)
+        // .once('transactionHash', hash => console.log(`Transaction hash: ${hash}`))
+        .on('confirmation', (confNumber, receipt) => {
+            console.log(`Confiramation number: ${confNumber}`)
+            console.log(`Transaction hash: ${receipt.transactionHash}`)
+        })
+        .on('error', err => console.error(handleWeb3Error(err)))
+        // .then(function (receipt) {
+        //     // will be fired once the receipt is mined
+        // });
 })
 
 function verifySigner(address, tx) {
@@ -83,4 +83,16 @@ function txParams(tx, types=[]) {
     const data = rawData.slice(10)
 
     return [funcHex, ...abi.rawDecode(types, Buffer.from(data, 'hex'))]
+}
+
+function showBalances() {
+    let address = '0xBd670c480DE5F6FE13a649dbc13Ed52A33251edF'
+    contract.balanceOf(address)
+        .then(bal =>
+            console.log(`Balance of ${address} is ${web3.utils.fromWei(bal)} Ether`))
+
+    address = '0xbc99f9A7A24252239D318C31De697e38635566E5'
+    contract.balanceOf(address)
+        .then(bal =>
+            console.log(`Balance of ${address} is ${web3.utils.fromWei(bal)} Ether`))
 }
