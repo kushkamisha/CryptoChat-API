@@ -1,16 +1,7 @@
 'use strict'
 
-const path = require('path')
-const { handleWeb3Error } = require('./utils')
-const Web3 = require('web3')
-// const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0ad545128d1244dfb79b68cbf4c36b7c'))
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
-const abi = require('ethereumjs-abi')
-const txDecoder = require('ethereum-tx-decoder')
-const Contract = require('./smart-contract')
-
-// const gas = await web3.eth.getGasPrice()
-const contract = new Contract(path.join('data', 'abi.json'), '0x24FbBB41074552a8Daea6a574A01F3324A8c11BA')
+const { handleWeb3Error, txParams, verifySigner } = require('./blockchain/utils')
+const { web3, contract } = require('./blockchain')
 
 // Create an address
 // const { address, privateKey, signTransaction, sign, encrypt } = web3.eth.accounts.create()
@@ -51,39 +42,17 @@ contract.transfer(
 
     showBalances()
 
-    web3.eth.sendSignedTransaction(tx.rawTransaction)
-        // .once('transactionHash', hash => console.log(`Transaction hash: ${hash}`))
-        .on('confirmation', (confNumber, receipt) => {
-            console.log(`Confiramation number: ${confNumber}`)
-            console.log(`Transaction hash: ${receipt.transactionHash}`)
-        })
-        .on('error', err => console.error(handleWeb3Error(err)))
-        // .then(function (receipt) {
-        //     // will be fired once the receipt is mined
-        // });
+    // web3.eth.sendSignedTransaction(tx.rawTransaction)
+    //     // .once('transactionHash', hash => console.log(`Transaction hash: ${hash}`))
+    //     .on('confirmation', (confNumber, receipt) => {
+    //         console.log(`Confiramation number: ${confNumber}`)
+    //         console.log(`Transaction hash: ${receipt.transactionHash}`)
+    //     })
+    //     .on('error', err => console.error(handleWeb3Error(err)))
+    //     // .then(function (receipt) {
+    //     //     // will be fired once the receipt is mined
+    //     // });
 })
-
-function verifySigner(address, tx) {
-    const signer = web3.eth.accounts.recover({
-        messageHash: tx.messageHash,
-        r: tx.r,
-        s: tx.s,
-        v: tx.v
-    })
-
-    return signer === address
-}
-
-function txParams(tx, types=[]) {
-    const decodedTx = txDecoder.decodeTx(tx.rawTransaction)
-    // console.log({ decodedTx })
-
-    const rawData = decodedTx.data
-    const funcHex = rawData.slice(0, 10)
-    const data = rawData.slice(10)
-
-    return [funcHex, ...abi.rawDecode(types, Buffer.from(data, 'hex'))]
-}
 
 function showBalances() {
     let address = '0xBd670c480DE5F6FE13a649dbc13Ed52A33251edF'
