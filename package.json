@@ -1,7 +1,7 @@
 {
-  "name": "sign-verify-ethereum",
+  "name": "crypto-chat",
   "version": "1.0.0",
-  "description": "",
+  "description": "Chatting app based on ethereum micropayments",
   "main": "app.js",
   "scripts": {
     "start": "nodemon .",
@@ -12,12 +12,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "ethereum-tx-decoder": "^3.0.0",
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.1",
+    "node-postgres": "^0.1.2",
+    "sodium": "^3.0.2",
     "web3": "^1.2.5-rc.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.4.1"

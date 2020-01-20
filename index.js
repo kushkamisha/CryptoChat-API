@@ -11,7 +11,7 @@ contract.withdraw(
     '0xbc99f9A7A24252239D318C31De697e38635566E5',
     '3711613e3e796754e50c0bc1be237ce603600ec7b77744f72b60a284690f1c29',
     web3.utils.toWei('1', 'ether')
-).then(tx => web3.eth.sendSignedTransaction(tx.rawTransaction))
+).then(tx => console.log(tx) )//web3.eth.sendSignedTransaction(tx.rawTransaction))
 
 showBalances()
 
