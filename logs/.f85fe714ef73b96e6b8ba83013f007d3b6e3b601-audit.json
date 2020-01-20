@@ -1,0 +1,14 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/kushkamisha/Documents/Fiot/Diploma CryptoChat/sign-verify-ethereum/logs/.f85fe714ef73b96e6b8ba83013f007d3b6e3b601-audit.json",
+    "files": [
+        {
+            "date": 1579510080776,
+            "name": "/Users/kushkamisha/Documents/Fiot/Diploma CryptoChat/sign-verify-ethereum/logs/2020-01-20-results.log",
+            "hash": "cf99384eada174a9e5fc94106953d48d"
+        }
+    ]
+}

@@ -1,6 +1,7 @@
 'use strict'
 
 const { auth } = require('../services')
+const logger = require('../logger')
 
 /*
  * call other imported services, or same service but different functions here if you need to
@@ -14,7 +15,7 @@ const register = async (req, res, next) => {
         res.sendStatus(201)
         next()
     } catch (e) {
-        console.log(e.message)
+        logger.error(e.message)
         res.sendStatus(500) && next(e => console.error(e))
     }
 }

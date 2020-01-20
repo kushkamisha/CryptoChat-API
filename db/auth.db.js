@@ -1,5 +1,7 @@
 'use strict'
 
+const logger = require('../logger')
+
 const register = (email, pass) => {
     /*
      * put code to call database here
@@ -8,6 +10,7 @@ const register = (email, pass) => {
       INSERT INTO blogposts (user_name, blogpost_body)
       VALUES (user, content);
     */
+    logger.debug({ email, pass })
     return 1 //just a dummy return as we aren't calling db right now
 }
 

@@ -1,12 +1,12 @@
 'use strict'
 
-require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 const routes = require('./routes')
+const config = require('./config')
 
-const port = process.env.PORT || 3000
+const port = config.port || 3000
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))

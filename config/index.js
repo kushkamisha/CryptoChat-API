@@ -1,6 +1,6 @@
 'use strict'
 
-require('dotenv').config() // load environment variables
+require('dotenv').config()
 
 const env = process.env.NODE_ENV || 'development'
 const config = require(`./${env}`)

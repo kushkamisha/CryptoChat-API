@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
   },
@@ -17,7 +18,11 @@
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.1",
-    "web3": "^1.2.5-rc.0"
+    "web3": "^1.2.5-rc.0",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^4.4.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
 }

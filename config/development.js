@@ -9,5 +9,5 @@ module.exports = {
         password: process.env.DEV_PGPASSWORD,
         port: process.env.DEV_PGPORT,
     },
-    defaultUrl: process.env.DEFAULT_URL,
+    port: process.env.APP_PORT,
 }

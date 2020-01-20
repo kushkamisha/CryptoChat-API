@@ -1,0 +1,68 @@
+10:52:52 debug: [object Object]
+10:56:19 debug: [object Object]
+10:58:01 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:00:27 debug: msg
+{ email: 'mail', pass: 'password' }
+{ email: 'mail', pass: 'password' }
+11:05:33 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:06:06 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:11:31 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:12:00 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:12:30 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:14:33 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:15:08 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:15:33 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+11:16:44 debug: {
+    "email": "mail",
+    "pass": "password"
+}
+{ email: 'mail', pass: 'password' }
+{ email: 'mail', pass: 'password' }
+11:18:22 { email: 'mail', pass: 'password' }
+hello { email: 'mail', pass: 'password' }
+hello { email: 'mail', pass: 'password' }
+hello { email: 'mail', pass: 'password' }
+hello { email: 'mail', pass: 'password' }
+hello { email: 'mail', pass: 'password' }
+hello { email: 'mail', pass: 'password' }
+hello message
+undefined [34mdebug[39m { email: 'mail', pass: 'password' }
+undefined [34mdebug[39m { email: 'mail', pass: 'password' }
+11:21:33 [34mdebug[39m { email: 'mail', pass: 'password' }
+11:21:33 [34mdebug[39m { email: 'mail', pass: 'password' }
+undefined [34mdebug[39m { email: 'mail', pass: 'password' }
+11:22:35 debug: [object Object]
+11:23:24 debug { email: 'mail', pass: 'password' }
+undefined debug { email: 'mail', pass: 'password' }
+2020-01-20T09:23:53.549Z debug { email: 'mail', pass: 'password' }
+11:24:17 debug { email: 'mail', pass: 'password' }
+11:25:07 debug { email: 'mail', pass: 'password' }
+11:25:21 [34mdebug[39m { email: 'mail', pass: 'password' }
+11:25:30 debug { email: 'mail', pass: 'password' }
