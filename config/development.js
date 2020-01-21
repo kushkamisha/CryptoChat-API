@@ -9,5 +9,6 @@ module.exports = {
         password: process.env.DEV_PGPASSWORD,
         port: process.env.DEV_PGPORT,
     },
-    port: process.env.APP_PORT,
+    port: process.env.DEV_APP_PORT,
+    jwtKey: process.env.DEV_JWT_PR_KEY,
 }
