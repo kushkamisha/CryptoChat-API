@@ -1,8 +1,7 @@
 'use strict'
 
-const jwt = require('jsonwebtoken')
 const { auth } = require('../services')
-const { jwtKey } = require('../config')
+const { generateToken } = require('../utils/crypto')
 const logger = require('../logger')
 
 const register = (req, res, next) => new Promise((resolve, reject) => {
@@ -13,13 +12,24 @@ const register = (req, res, next) => new Promise((resolve, reject) => {
 
     // birthDate must be in format yyyy-mm-dd
 
+    const keywordsArr = keywords ? keywords.split(',').map(x => x.trim()) : []
+
     auth.register(
         email, pass, firstName, middleName, lastName, birthDate,
-        keywords, description
+        keywordsArr, description
     )
-        .then(result => {
-            logger.info(`Register result: ${result}`)
-            res.sendStatus(201)
+        .then(({ userId, prKey }) => {
+            logger.info(`Register result: ${!!userId}. User id: ${userId}`)
+
+            if (userId) {
+                generateToken(userId)
+                    .then(jwt =>
+                        res.status(200).send({ status: 'success', jwt, prKey }))
+            } else res.status(409).send({
+                status: 'error',
+                message: `There is already a user with such username. Maybe, that's your old account`
+            })
+
             next()
         })
         .catch(err => {
@@ -34,17 +44,9 @@ const login = (req, res, next) => new Promise((resolve, reject) => {
             logger.info(`Login result (user id): ${userId}`)
 
             if (userId) {
-                // Generate a token for the user
-                jwt.sign({ userId }, jwtKey,
-                    { expiresIn: '18h' }, (err, token) => {
-                        if (err) throw err
-                        logger.debug(`JWT token: ${token}`)
-
-                        res.status(200).send({
-                            status: 'success',
-                            jwt: token
-                        })
-                    })
+                generateToken(userId)
+                    .then(jwt => 
+                        res.status(200).send({ status: 'success', jwt }))
             } else res.status(401).send({
                 status: 'error',
                 message: 'Your email or password is incorrect'
@@ -58,25 +60,7 @@ const login = (req, res, next) => new Promise((resolve, reject) => {
         })
 })
 
-const signTransfer = (req, res, next) => {
-    logger.debug(req.body)
-    const token = req.body.token
-    jwt.verify(token, jwtKey, (err, decoded) => {
-        if (err) {
-            return res.status(401).send({
-                status: 'unauthorized',
-                message: 'Invalid token provided'
-            })
-        }
-        logger.debug({ decoded })
-        res.status(201).send({
-            status: 'authorized'
-        })
-    })
-}
-
 module.exports = {
     register,
     login,
-    signTransfer,
 }

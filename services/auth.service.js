@@ -11,10 +11,8 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
             .then(passwordHash => {
                 logger.debug({ passwordHash })
 
-                const keywordsArr = keywords.split(',').map(x => x.trim())
-
                 auth.register(email, passwordHash, firstName, middleName,
-                    lastName, birthDate, keywordsArr, description)
+                    lastName, birthDate, keywords, description)
                     .then(res => resolve(res))
                     .catch(err => reject(err))
             }))

@@ -40,4 +40,9 @@ module.exports = {
 
         return [funcHex, ...abi.rawDecode(types, Buffer.from(data, 'hex'))]
     },
+
+    generateKeys: () => {
+        const { address, privateKey } = web3.eth.accounts.create()
+        return [address, privateKey]
+    }
 }
