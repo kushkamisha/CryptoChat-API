@@ -2,6 +2,7 @@
 
 const { auth } = require('../db')
 const { hash, verify } = require('../utils/crypto')
+const BreakPromiseChainError = require('../errors/BreakPromiseChainError')
 const logger = require('../logger')
 
 const register = (email, pass, firstName, middleName, lastName, birthDate,
@@ -11,10 +12,26 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
             .then(passwordHash => {
                 logger.debug({ passwordHash })
 
-                auth.register(email, passwordHash, firstName, middleName,
-                    lastName, birthDate, keywords, description)
-                    .then(res => resolve(res))
-                    .catch(err => reject(err))
+                auth.checkUniqueness(email)
+                    .then(uniqueness => {
+                        if (!uniqueness) {
+                            resolve(0)
+                            throw new BreakPromiseChainError()
+                        }
+                        return
+                    })
+                    .then(() => auth.registerUser(email, firstName, middleName, lastName,
+                        birthDate, description, pass))
+                    .then(res => {
+                        const userId = res[0].UserId
+                        logger.debug({ userId })
+                        return auth.setUserKeywords(keywords, userId)
+                    })
+                    .then(userId => auth.createWallet(userId))
+                    .then(({ userId, prKey }) => resolve({ userId, prKey }))
+                    .catch(err => {
+                        if (err.name !== 'BreakPromiseChainError') reject(err)
+                    })
             }))
 
 const login = ({ email, pass }) => new Promise((resolve, reject) => 

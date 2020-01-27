@@ -3,7 +3,6 @@
 const logger = require('../logger')
 const { query } = require('../utils/db')
 const { generateKeys } = require('../blockchain/utils')
-const BreakPromiseChainError = require('../errors/BreakPromiseChainError')
 
 const checkUniqueness = email => new Promise((resolve, reject) =>
     query(`select * from "User" where "Email" = '${email}'`)
@@ -46,36 +45,13 @@ const createWallet = userId => new Promise((resolve, reject) => {
         .catch(err => reject(err))
 })
 
-const register = (email, pass, firstName, middleName, lastName, birthDate,
-    keywords, description) => 
-    new Promise((resolve, reject) => {
-        checkUniqueness(email)
-            .then(uniqueness => {
-                if (!uniqueness) {
-                    resolve(0)
-                    throw new BreakPromiseChainError()
-                }
-                return
-            })
-            .then(() => registerUser(email, firstName, middleName, lastName,
-                birthDate, description, pass))
-            .then(res => {
-                const userId = res[0].UserId
-                logger.debug({ userId })
-                return setUserKeywords(keywords, userId)
-            })
-            .then(userId => createWallet(userId))
-            .then(({ userId, prKey}) => resolve({ userId, prKey }))
-            .catch(err => {
-                if (err !== 'BreakPromiseChainError') reject(err)
-            })
-    })
-    
-
 const login = email => query(`
     select * from "User" where "Email" = '${email}'`)
 
 module.exports = {
-    register,
-    login
+    checkUniqueness,
+    registerUser,
+    setUserKeywords,
+    createWallet,
+    login,
 }
