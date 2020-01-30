@@ -2,14 +2,15 @@
 
 const express = require('express')
 const { auth, blockchain } = require('../controllers')
+const { verifyToken } = require('../middleware')
 
 const router = express.Router()
 
 router.post('/register', auth.register)
-router.get('/login', auth.login)
+router.get ('/login',    auth.login)
 
-router.get('/balanceInAddress', blockchain.balanceInAddress)
-router.get('/balanceInContract', blockchain.balanceInContract)
-router.post('/signTransfer', blockchain.signTransfer)
+router.get ('/balanceInAddress',  verifyToken, blockchain.balanceInAddress)
+router.get ('/balanceInContract', verifyToken, blockchain.balanceInContract)
+router.post('/signTransfer',      verifyToken, blockchain.signTransfer)
 
 module.exports = router

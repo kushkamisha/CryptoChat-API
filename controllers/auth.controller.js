@@ -4,7 +4,7 @@ const { auth } = require('../services')
 const { generateToken } = require('../utils/crypto')
 const logger = require('../logger')
 
-const register = (req, res, next) => new Promise((resolve, reject) => {
+const register = (req, res, next) => {
     const {
         email, pass, firstName, middleName, lastName, birthDate,
         keywords, description
@@ -36,9 +36,9 @@ const register = (req, res, next) => new Promise((resolve, reject) => {
             console.error({ err })
             res.sendStatus(500) && next(console.error(err))
         })
-})
+}
 
-const login = (req, res, next) => new Promise((resolve, reject) => {
+const login = (req, res, next) => {
     auth.login(req.body)
         .then(userId => {
             logger.info(`Login result (user id): ${userId}`)
@@ -58,7 +58,7 @@ const login = (req, res, next) => new Promise((resolve, reject) => {
             logger.error({ err })
             res.sendStatus(500)
         })
-})
+}
 
 module.exports = {
     register,

@@ -3,7 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const Web3 = require('web3')
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
+const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0ad545128d1244dfb79b68cbf4c36b7c'))
 
 module.exports = class Contract {
 
