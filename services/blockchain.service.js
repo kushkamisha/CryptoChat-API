@@ -27,7 +27,6 @@ const balanceInContract = userId =>
             .then(res => {
                 const address = res[0].Address
                 logger.debug(`User address: ${address}`)
-                // return web3.eth.getBalance(address)
                 return contract.balanceOf(address)
             })
             .then(balance => resolve(balance))
@@ -53,8 +52,22 @@ const signTransfer = ({ from, to, amount, prKey }) =>
                 else reject()
             }))
 
+const publishTransfer = rawTx =>
+    new Promise((resolve, reject) =>
+        web3.eth.sendSignedTransaction(rawTx)
+            .once('transactionHash', hash => {
+                logger.debug(`Transaction hash: ${hash}`)
+                resolve(hash)
+            })
+            .on('confirmation', (confNumber, receipt) => {
+                console.log(`Confiramation number: ${confNumber}`)
+                console.log(`Transaction hash: ${receipt.transactionHash}`)
+            })
+            .on('error', reject))
+
 module.exports = {
     balanceInAddress,
     balanceInContract,
     signTransfer,
+    publishTransfer,
 }

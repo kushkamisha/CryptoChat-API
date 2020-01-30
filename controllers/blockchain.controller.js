@@ -1,7 +1,7 @@
 'use strict'
 
 const { blockchain } = require('../services')
-const { toEth } = require('../utils/blockchain')
+const { toEth, handleWeb3Error } = require('../utils/blockchain')
 const logger = require('../logger')
 
 const balanceInAddress = (req, res) => {
@@ -56,8 +56,24 @@ const signTransfer = (req, res) => {
         })
 }
 
+const publishTransfer = (req, res) => {
+    /**
+     * @todo validate rawTx
+     */
+    blockchain.publishTransfer(req.body.rawTx)
+        .then(hash => {
+            logger.debug({ hash })
+            res.status(200).send({
+                status: 'mining...',
+                txHash: hash
+            })
+        })
+        .catch(err => console.error(err))
+}
+
 module.exports = {
     balanceInAddress,
     balanceInContract,
     signTransfer,
+    publishTransfer,
 }

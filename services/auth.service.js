@@ -21,7 +21,7 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
                         return
                     })
                     .then(() => auth.registerUser(email, firstName, middleName, lastName,
-                        birthDate, description, pass))
+                        birthDate, description, passwordHash))
                     .then(res => {
                         const userId = res[0].UserId
                         logger.debug({ userId })
