@@ -1,26 +1,8 @@
 'use strict'
 
 const { blockchain } = require('../services')
-const { verifyToken } = require('../utils/crypto')
 const { toEth } = require('../utils/blockchain')
 const logger = require('../logger')
-
-const signTransfer = (req, res, next) => {
-    console.log(req.decoded)
-    // const token = req.body.token
-    // verifyToken(token)
-    //     .then(decoded =>
-    //         res.status(201).send({
-    //             status: 'authorized'
-    //         }))
-    //     .catch(err => {
-    //         logger.debug(err)
-    //         res.status(401).send({
-    //             status: 'unauthorized',
-    //             message: 'Invalid token provided'
-    //         })
-    //     })
-}
 
 const balanceInAddress = (req, res) => {
     blockchain.balanceInAddress(req.decoded.userId)
@@ -34,7 +16,7 @@ const balanceInAddress = (req, res) => {
             })
         })
         .catch(err => {
-            logger.debug({ err })
+            logger.error(err)
             res.sendStatus(500)
         })
 }
@@ -51,13 +33,31 @@ const balanceInContract = (req, res) => {
             })
         })
         .catch(err => {
-            logger.debug({ err })
+            logger.error(err)
+            res.sendStatus(500)
+        })
+}
+
+const signTransfer = (req, res) => {
+    /**
+     * @todo vadidate from, to, amount, prKey
+     */
+    blockchain.signTransfer(req.body)
+        .then(tx => {
+            logger.debug({ tx })
+            res.status(200).send({
+                status: 'success',
+                rawTx: tx.rawTransaction
+            })
+        })
+        .catch(err => {
+            logger.error(err)
             res.sendStatus(500)
         })
 }
 
 module.exports = {
-    signTransfer,
     balanceInAddress,
     balanceInContract,
+    signTransfer,
 }

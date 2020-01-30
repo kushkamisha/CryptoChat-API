@@ -1,8 +1,8 @@
 'use strict'
 
 const express = require('express')
-const { auth, blockchain } = require('../controllers')
-const { verifyToken } = require('../middleware')
+const { auth, blockchain } = require('./controllers')
+const { verifyToken } = require('./middleware')
 
 const router = express.Router()
 

@@ -1,17 +1,22 @@
 'use strict'
 
+require('dotenv').config()
 const fs = require('fs')
 const path = require('path')
 const Web3 = require('web3')
-const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0ad545128d1244dfb79b68cbf4c36b7c'))
+const web3 = new Web3(
+    new Web3.providers.HttpProvider(process.env.INFURA_ROPSTEN))
 
 module.exports = class Contract {
 
-    constructor(abiFilename, address) {
+    constructor({ abi, address }) {
         this.abi = JSON.parse(
-            fs.readFileSync(path.join(__dirname, abiFilename)))
+            fs.readFileSync(path.join(__dirname, abi)))
         this.address = address
+        this.gas = 2000000
         this.contract = new web3.eth.Contract(this.abi, this.address)
+
+        this.__updateGas()
     }
 
     instance() { return this.contract }
@@ -20,33 +25,37 @@ module.exports = class Contract {
         return this.contract.methods.balanceOf(address).call()
     }
 
-    deposit(sender, privateKey, value) {
-        return this.__send(sender, privateKey, 'deposit', [], value)
+    deposit(from, prKey, value) {
+        return this.__send(from, prKey, 'deposit', [], value)
     }
 
-    transfer(sender, privateKey, recipient, amount) {
-        return this.__send(sender, privateKey, 'transfer', [recipient, amount])
+    transfer({ from, prKey, to, amount }) {
+        return this.__send(from, prKey, 'transfer', [to, amount])
     }
 
-    withdraw(sender, privateKey, amount) {
-        return this.__send(sender, privateKey, 'withdraw', [amount])
+    withdraw(from, prKey, amount) {
+        return this.__send(from, prKey, 'withdraw', [amount])
     }
 
-    __send(sender, privateKey, method, params, value = 0) {
+    __send(from, prKey, method, params, value = 0) {
         const query = this.contract.methods[method](...params)
         const encodedABI = query.encodeABI()
 
         return web3.eth.accounts.signTransaction(
             {
-                nonce: web3.eth.getTransactionCount(sender),
+                nonce: web3.eth.getTransactionCount(from),
                 data: encodedABI,
-                from: sender,
-                gas: 2000000,
+                from,
+                gas: this.gas,
                 to: this.contract.options.address,
                 value
             },
-            privateKey,
+            prKey,
             false,
         )
+    }
+
+    async __updateGas() {
+        this.gas = await web3.eth.getGasPrice()
     }
 }

@@ -4,6 +4,8 @@ const { web3 } = require('../blockchain')
 const { getUserAddress } = require('../db/blockchain.db')
 const contract = require('../blockchain/singletons/contract')
 const logger = require('../logger')
+const { checkSignedFunc } = require('../utils/blockchain')
+const { toWei } = require('../utils/blockchain')
 
 const balanceInAddress = userId =>
     new Promise((resolve, reject) =>
@@ -34,7 +36,25 @@ const balanceInContract = userId =>
                 reject(err)
             }))
 
+const signTransfer = ({ from, to, amount, prKey }) =>
+    new Promise((resolve, reject) =>
+        contract.transfer({ from, to, amount: toWei(amount), prKey })
+            .then(tx => {
+                logger.debug(tx)
+                const isGood = checkSignedFunc({
+                    tx,
+                    from,
+                    params: ['address', 'uint256'],
+                    paramsCheck: [to, amount],
+                    func: 'transfer'
+                })
+
+                if (isGood) resolve(tx)
+                else reject()
+            }))
+
 module.exports = {
     balanceInAddress,
     balanceInContract,
+    signTransfer,
 }
