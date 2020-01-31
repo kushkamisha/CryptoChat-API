@@ -41,7 +41,7 @@ const signTransfer = ({ from, to, amount, prKey }) =>
             .then(tx => {
                 logger.debug(tx)
                 const isGood = checkSignedFunc({
-                    tx,
+                    rawTx: tx.rawTransaction,
                     from,
                     params: ['address', 'uint256'],
                     paramsCheck: [to, amount],
@@ -65,9 +65,19 @@ const publishTransfer = rawTx =>
             })
             .on('error', reject))
 
+const verifyTransfer = (rawTx, from, to, amount) =>
+    checkSignedFunc({
+        rawTx,
+        from,
+        func: 'transfer',
+        params: ['address', 'uint256'],
+        paramsCheck: [to, amount]
+    })
+
 module.exports = {
     balanceInAddress,
     balanceInContract,
     signTransfer,
+    verifyTransfer,
     publishTransfer,
 }

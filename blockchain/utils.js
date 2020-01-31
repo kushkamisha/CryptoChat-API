@@ -18,20 +18,14 @@ module.exports = {
         return new Web3Error(info)
     },
 
-    verifySigner: (address, tx) => {
-        const signer = web3.eth.accounts.recover({
-            messageHash: tx.messageHash,
-            r: tx.r,
-            s: tx.s,
-            v: tx.v
-        })
+    verifySigner: (address, rawTx) => {
+        const signer = web3.eth.accounts.recoverTransaction(rawTx)
 
         return signer === address
     },
 
-    txParams: (tx, types = []) => {
-        const decodedTx = txDecoder.decodeTx(tx.rawTransaction)
-        // console.log({ decodedTx })
+    txParams: (rawTx, types = []) => {
+        const decodedTx = txDecoder.decodeTx(rawTx)
 
         const rawData = decodedTx.data
         const funcHex = rawData.slice(0, 10)

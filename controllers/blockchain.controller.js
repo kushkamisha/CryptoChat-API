@@ -63,17 +63,40 @@ const publishTransfer = (req, res) => {
     blockchain.publishTransfer(req.body.rawTx)
         .then(hash => {
             logger.debug({ hash })
-            res.status(200).send({
+            res.status(102).send({
                 status: 'mining...',
                 txHash: hash
             })
         })
-        .catch(err => console.error(err))
+        .catch(err => {
+            logger.error(err)
+            res.sendStatus(500)
+        })
+}
+
+const verifyTransfer = (req, res) => {
+    /**
+     * @todo validate tx, from, to, amount
+     */
+    const { rawTx, from, to, amount } = req.body
+    const isGood = blockchain.verifyTransfer(rawTx, from, to, amount)
+    if (isGood) {
+        res.status(200).send({
+            status: 'success',
+            msg: 'The transaction is valid'
+        })
+    } else {
+        res.status(200).send({
+            status: 'error',
+            msg: 'The transaction params and your params are different'
+        })
+    }
 }
 
 module.exports = {
     balanceInAddress,
     balanceInContract,
     signTransfer,
+    verifyTransfer,
     publishTransfer,
 }

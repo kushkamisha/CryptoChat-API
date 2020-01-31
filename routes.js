@@ -12,6 +12,7 @@ router.get ('/login',    auth.login)
 router.get ('/balanceInAddress',  verifyToken, blockchain.balanceInAddress)
 router.get ('/balanceInContract', verifyToken, blockchain.balanceInContract)
 router.post('/signTransfer',      verifyToken, blockchain.signTransfer)
+router.get ('/verifyTranfer',     verifyToken, blockchain.verifyTransfer)
 router.post('/publishTransfer',   verifyToken, blockchain.publishTransfer)
 
 module.exports = router
