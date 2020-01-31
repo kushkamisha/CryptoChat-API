@@ -1,8 +1,8 @@
-'use strict'
+
 
 const { auth } = require('../db')
 const { hash, verify } = require('../utils/crypto')
-const BreakPromiseChainError = require('../errors/BreakPromiseChainError')
+const { BreakPromiseChainError } = require('../errors')
 const logger = require('../logger')
 
 const register = (email, pass, firstName, middleName, lastName, birthDate,
@@ -20,8 +20,15 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
                         }
                         return
                     })
-                    .then(() => auth.registerUser(email, firstName, middleName, lastName,
-                        birthDate, description, passwordHash))
+                    .then(() => auth.registerUser(
+                        email,
+                        firstName,
+                        middleName,
+                        lastName,
+                        birthDate,
+                        description,
+                        passwordHash
+                    ))
                     .then(res => {
                         const userId = res[0].UserId
                         logger.debug({ userId })
@@ -34,7 +41,7 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
                     })
             }))
 
-const login = ({ email, pass }) => new Promise((resolve, reject) => 
+const login = ({ email, pass }) => new Promise((resolve, reject) =>
     auth.login(email)
         .then(res => {
             logger.debug({ note: 'DB auth.login', res })

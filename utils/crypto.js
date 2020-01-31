@@ -1,11 +1,11 @@
-'use strict'
+
 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { jwtKey } = require('../config')
+const config = require('../config')
 const logger = require('../logger')
 
-const hash = sha3 => new Promise((resolve, reject) => 
+const hash = sha3 => new Promise((resolve, reject) =>
     bcrypt.hash(sha3, 13, (err, hash) => {
         if (err) reject(err)
         resolve(hash)
@@ -20,15 +20,16 @@ const verify = (sha3, hash) => new Promise((resolve, reject) => {
         .catch(err => reject(err))
 })
 
-const generateToken = (userId, expiresIn = '18h') => new Promise((resolve, reject) =>
-    jwt.sign({ userId }, jwtKey, { expiresIn }, (err, token) => {
-        if (err) reject(err)
-        logger.debug(`JWT token: ${token}`)
-        resolve(token)
-    }))
+const generateToken = (userId, expiresIn = config.jwt.expiresIn) =>
+    new Promise((resolve, reject) =>
+        jwt.sign({ userId }, config.jwt.key, { expiresIn }, (err, token) => {
+            if (err) reject(err)
+            logger.debug(`JWT token: ${token}`)
+            resolve(token)
+        }))
 
 const verifyToken = token => new Promise((resolve, reject) =>
-    jwt.verify(token, jwtKey, (err, decoded) => {
+    jwt.verify(token, config.jwt.key, (err, decoded) => {
         if (err) reject(err)
         logger.debug({ decoded })
         resolve(decoded)

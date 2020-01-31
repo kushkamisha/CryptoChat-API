@@ -1,8 +1,8 @@
-'use strict'
+
 
 const logger = require('../logger')
 const { query } = require('../utils/db')
-const { generateKeys } = require('../blockchain/utils')
+const { generateKeys } = require('../utils/blockchain')
 
 const checkUniqueness = email => new Promise((resolve, reject) =>
     query(`select * from "User" where "Email" = '${email}'`)
@@ -13,7 +13,7 @@ const checkUniqueness = email => new Promise((resolve, reject) =>
         .catch(err => reject(err)))
 
 const registerUser = (email, firstName, middleName, lastName, birthDate,
-    description, pass) => 
+    description, pass) =>
     query(`
         insert into "User" (
             "Email", "FirstName", "MiddleName", "LastName",

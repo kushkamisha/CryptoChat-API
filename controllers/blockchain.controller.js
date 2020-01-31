@@ -1,7 +1,7 @@
-'use strict'
+
 
 const { blockchain } = require('../services')
-const { toEth, handleWeb3Error } = require('../utils/blockchain')
+const { toEth } = require('../utils/blockchain')
 const logger = require('../logger')
 
 const balanceInAddress = (req, res) => {
@@ -59,17 +59,20 @@ const signTransfer = (req, res) => {
 const publishTransfer = (req, res) => {
     /**
      * @todo validate rawTx
+     * @todo if try to send the second time - Internal server error
+     * (nonce too low)
      */
     blockchain.publishTransfer(req.body.rawTx)
         .then(hash => {
             logger.debug({ hash })
-            res.status(102).send({
+            res.status(200).send({
                 status: 'mining...',
                 txHash: hash
             })
         })
         .catch(err => {
             logger.error(err)
+            console.log({ err })
             res.sendStatus(500)
         })
 }

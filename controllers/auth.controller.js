@@ -1,4 +1,4 @@
-'use strict'
+
 
 const { auth } = require('../services')
 const { generateToken } = require('../utils/crypto')
@@ -27,7 +27,8 @@ const register = (req, res, next) => {
                         res.status(200).send({ status: 'success', jwt, prKey }))
             } else res.status(409).send({
                 status: 'error',
-                message: `There is already a user with such username. Maybe, that's your old account`
+                message: 'There is already a user with such username. Maybe, \
+that\'s your old account'
             })
 
             next()
@@ -45,7 +46,7 @@ const login = (req, res, next) => {
 
             if (userId) {
                 generateToken(userId)
-                    .then(jwt => 
+                    .then(jwt =>
                         res.status(200).send({ status: 'success', jwt }))
             } else res.status(401).send({
                 status: 'error',

@@ -1,11 +1,10 @@
-'use strict'
 
-require('dotenv').config()
+
 const fs = require('fs')
 const path = require('path')
+const { blockchain } = require('../config')
 const Web3 = require('web3')
-const web3 = new Web3(
-    new Web3.providers.HttpProvider(process.env.INFURA_ROPSTEN))
+const web3 = new Web3(new Web3.providers.HttpProvider(blockchain.infura))
 
 module.exports = class Contract {
 
@@ -15,8 +14,6 @@ module.exports = class Contract {
         this.address = address
         this.gas = 2000000
         this.contract = new web3.eth.Contract(this.abi, this.address)
-
-        this.__updateGas()
     }
 
     instance() { return this.contract }
@@ -53,9 +50,5 @@ module.exports = class Contract {
             prKey,
             false,
         )
-    }
-
-    async __updateGas() {
-        this.gas = await web3.eth.getGasPrice()
     }
 }
