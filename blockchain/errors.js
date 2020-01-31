@@ -1,4 +1,4 @@
-'use strict'
+
 
 module.exports = {
     Web3Error: class Web3Error extends Error {

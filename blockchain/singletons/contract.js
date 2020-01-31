@@ -1,4 +1,4 @@
-'use strict'
+
 
 const { blockchain } = require('../../config')
 const path = require('path')

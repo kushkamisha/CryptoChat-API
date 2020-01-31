@@ -1,4 +1,4 @@
-'use strict'
+
 
 const { blockchain } = require('../../config')
 const Web3 = require('web3')

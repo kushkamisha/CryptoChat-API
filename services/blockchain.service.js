@@ -1,4 +1,4 @@
-'use strict'
+
 
 const { web3 } = require('../blockchain')
 const { getUserAddress } = require('../db/blockchain.db')

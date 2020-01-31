@@ -1,7 +1,7 @@
-'use strict'
+
 
 const { blockchain } = require('../services')
-const { toEth, handleWeb3Error } = require('../utils/blockchain')
+const { toEth } = require('../utils/blockchain')
 const logger = require('../logger')
 
 const balanceInAddress = (req, res) => {

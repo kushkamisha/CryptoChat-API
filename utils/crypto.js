@@ -1,11 +1,11 @@
-'use strict'
+
 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const config = require('../config')
 const logger = require('../logger')
 
-const hash = sha3 => new Promise((resolve, reject) => 
+const hash = sha3 => new Promise((resolve, reject) =>
     bcrypt.hash(sha3, 13, (err, hash) => {
         if (err) reject(err)
         resolve(hash)

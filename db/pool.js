@@ -1,4 +1,4 @@
-'use strict'
+
 
 const logger = require('../logger')
 const { db } = require('../config')
@@ -12,8 +12,6 @@ const pool = new Pool({
     port: db.port
 })
 
-pool.on('error', (err, client) => {
-    logger.error(`Unexpected error on idle client ${err}`)
-})
+pool.on('error', err => logger.error(`Unexpected error on idle client ${err}`))
 
 module.exports = pool

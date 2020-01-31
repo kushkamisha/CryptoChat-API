@@ -2,7 +2,7 @@
  * Should be replaced with custom logger
  */
 
-'use strict'
+
 
 const { createLogger, format, transports } = require('winston')
 require('winston-daily-rotate-file')
@@ -49,7 +49,7 @@ const logger = createLogger({
             level: env === 'development' ? 'debug' : 'info',
             format: format.combine(
                 format.colorize(),
-                format.printf(info => 
+                format.printf(info =>
                     util.format(info.timestamp, info.level, info.message))
             )
         }),
