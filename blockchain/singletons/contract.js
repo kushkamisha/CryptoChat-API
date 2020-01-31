@@ -1,12 +1,12 @@
 'use strict'
 
-require('dotenv').config()
+const { blockchain } = require('../../config')
 const path = require('path')
 const Contract = require('../smart-contract')
 
 const contract = new Contract({
     abi: path.join('data', 'abi.json'),
-    address: process.env.CONTRACT_ADDRESS,
+    address: blockchain.contractAddr,
 })
 
 module.exports = contract

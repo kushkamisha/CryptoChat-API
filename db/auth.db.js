@@ -2,7 +2,7 @@
 
 const logger = require('../logger')
 const { query } = require('../utils/db')
-const { generateKeys } = require('../blockchain/utils')
+const { generateKeys } = require('../utils/blockchain')
 
 const checkUniqueness = email => new Promise((resolve, reject) =>
     query(`select * from "User" where "Email" = '${email}'`)

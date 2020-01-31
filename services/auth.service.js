@@ -2,7 +2,7 @@
 
 const { auth } = require('../db')
 const { hash, verify } = require('../utils/crypto')
-const BreakPromiseChainError = require('../errors/BreakPromiseChainError')
+const { BreakPromiseChainError } = require('../errors')
 const logger = require('../logger')
 
 const register = (email, pass, firstName, middleName, lastName, birthDate,

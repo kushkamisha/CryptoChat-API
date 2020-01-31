@@ -2,7 +2,7 @@
 
 const { web3 } = require('../blockchain')
 const { getUserAddress } = require('../db/blockchain.db')
-const contract = require('../blockchain/singletons/contract')
+const { contract } = require('../blockchain/singletons')
 const logger = require('../logger')
 const { checkSignedFunc } = require('../utils/blockchain')
 const { toWei } = require('../utils/blockchain')
@@ -53,17 +53,19 @@ const signTransfer = ({ from, to, amount, prKey }) =>
             }))
 
 const publishTransfer = rawTx =>
-    new Promise((resolve, reject) =>
+    new Promise((resolve, reject) => {
+        console.log({ rawTx })
         web3.eth.sendSignedTransaction(rawTx)
             .once('transactionHash', hash => {
                 logger.debug(`Transaction hash: ${hash}`)
                 resolve(hash)
             })
-            .on('confirmation', (confNumber, receipt) => {
-                console.log(`Confiramation number: ${confNumber}`)
-                console.log(`Transaction hash: ${receipt.transactionHash}`)
-            })
-            .on('error', reject))
+            // .on('confirmation', (confNumber, receipt) => {
+            //     console.log(`Confiramation number: ${confNumber}`)
+            //     console.log(`Transaction hash: ${receipt.transactionHash}`)
+            // })
+            .on('error', reject)
+    })
 
 const verifyTransfer = (rawTx, from, to, amount) =>
     checkSignedFunc({
