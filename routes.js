@@ -1,19 +1,19 @@
-
-
 const express = require('express')
-const { auth, blockchain } = require('./controllers')
-const { verifyToken } = require('./middleware')
+const { auth, blockchain, chat } = require('./controllers')
+const { verifyAppToken } = require('./middleware')
 
 // eslint-disable-next-line new-cap
-const router = express.Router()
+const r = express.Router()
 
-router.post('/register', auth.register)
-router.get('/login',    auth.login)
+r.post('/auth/register', auth.register)
+r.post('/auth/login',    auth.login)
 
-router.get('/balanceInAddress',  verifyToken, blockchain.balanceInAddress)
-router.get('/balanceInContract', verifyToken, blockchain.balanceInContract)
-router.post('/signTransfer',      verifyToken, blockchain.signTransfer)
-router.get('/verifyTranfer',     verifyToken, blockchain.verifyTransfer)
-router.post('/publishTransfer',   verifyToken, blockchain.publishTransfer)
+r.post('/chat/home',           verifyAppToken, chat.home)
 
-module.exports = router
+r.get('/bc/balanceInAddress',  verifyAppToken, blockchain.balanceInAddress)
+r.get('/bc/balanceInContract', verifyAppToken, blockchain.balanceInContract)
+r.post('/bc/signTransfer',     verifyAppToken, blockchain.signTransfer)
+r.get('/bc/verifyTranfer',     verifyAppToken, blockchain.verifyTransfer)
+r.post('/bc/publishTransfer',  verifyAppToken, blockchain.publishTransfer)
+
+module.exports = r

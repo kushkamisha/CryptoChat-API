@@ -1,5 +1,3 @@
-
-
 const { auth } = require('../services')
 const { generateToken } = require('../utils/crypto')
 const logger = require('../logger')

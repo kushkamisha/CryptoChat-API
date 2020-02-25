@@ -1,5 +1,3 @@
-
-
 const { auth } = require('../db')
 const { hash, verify } = require('../utils/crypto')
 const { BreakPromiseChainError } = require('../errors')
