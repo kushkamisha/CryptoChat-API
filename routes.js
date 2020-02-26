@@ -8,7 +8,8 @@ const r = express.Router()
 r.post('/auth/register', auth.register)
 r.post('/auth/login',    auth.login)
 
-r.get('/chat/home',           verifyAppToken, chat.home)
+r.get('/chat/chatList',        verifyAppToken, chat.chatsList)
+r.get('/chat/messages',        verifyAppToken, chat.messages)
 
 r.get('/bc/balanceInAddress',  verifyAppToken, blockchain.balanceInAddress)
 r.get('/bc/balanceInContract', verifyAppToken, blockchain.balanceInContract)

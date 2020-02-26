@@ -11,7 +11,7 @@ class Socket {
         this.io.use(verifySocketToken)
 
         this.io.on('connection', socket => {
-            console.log('A new user is connected')
+            console.log('A new socket user is connected')
         })
     }
 }
