@@ -22,7 +22,6 @@ const messages = ({ chatId, userId, text }) => new Promise((resolve, reject) =>
                 text: x.MessageText,
                 time: `${x.CreatedAt}`.slice(16, 21)
             }))
-            console.log({ msgs })
             resolve(msgs)
         })
         .catch(reject))

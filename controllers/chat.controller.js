@@ -44,7 +44,12 @@ const addMessage = (req, res) => {
     }
     chat.addMessage(params)
         .then(({ createdAt, chatUsers }) => {
-            req.io.emitSmart(chatUsers, 'new-message', ({
+            // req.io.emitSmart(chatUsers, 'new-message', ({
+            //     userId: req.body.decoded.userId,
+            //     message: req.body.message,
+            //     createdAt
+            // }))
+            req.io.emit('new-message', ({
                 userId: req.body.decoded.userId,
                 message: req.body.message,
                 createdAt

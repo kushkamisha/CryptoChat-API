@@ -18,6 +18,7 @@ class Socket {
         userId: ${socket.userId}
         socketId: ${socket.id}`)
             this.connections[socket.userId] = socket.id
+            logger.debug(this.connections)
         })
 
         this.io.on('disconnect', args => {
