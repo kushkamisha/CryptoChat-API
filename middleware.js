@@ -3,14 +3,13 @@ const crypto = require('./utils/crypto')
 const { verifyToken } = require('./utils/crypto')
 
 const verifyAppToken = (req, res, next) => {
-    const token = req.body.token
+    const token = req.body.token ? req.body.token : req.query.token
     crypto.verifyToken(token)
         .then(decoded => {
             req.body.decoded = decoded
             next()
         })
-        .catch(err => {
-            logger.debug({ err })
+        .catch(() => {
             res.status(401).send({
                 status: 'unauthorized',
                 message: 'Invalid token provided'

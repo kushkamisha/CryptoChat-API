@@ -1,5 +1,3 @@
-
-
 const logger = require('../logger')
 const { db } = require('../config')
 const { Pool } = require('pg')

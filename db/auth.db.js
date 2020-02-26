@@ -1,5 +1,3 @@
-
-
 const logger = require('../logger')
 const { query } = require('../utils/db')
 const { generateKeys } = require('../utils/blockchain')
