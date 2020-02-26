@@ -3,7 +3,7 @@ const { query } = require('../utils/db')
 const { generateKeys } = require('../utils/blockchain')
 
 const checkUniqueness = email => new Promise((resolve, reject) =>
-    query(`select * from "User" where "Email" = '${email}'`)
+    query('select * from "User" where "Email" = $1', [email])
         .then(users => {
             if (users.length) resolve(false)
             resolve(true)
@@ -38,13 +38,12 @@ const createWallet = userId => new Promise((resolve, reject) => {
     logger.debug({ address, prKey })
 
     query(`insert into "Wallet" ("UserId", "Address")
-        values ('${userId}', '${address}')`)
+        values ($1, $2)`, [userId, address])
         .then(() => resolve({ userId, prKey }))
         .catch(err => reject(err))
 })
 
-const login = email => query(`
-    select * from "User" where "Email" = '${email}'`)
+const login = email => query('select * from "User" where "Email" = $1', [email])
 
 module.exports = {
     checkUniqueness,

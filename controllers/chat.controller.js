@@ -36,7 +36,35 @@ const messages = (req, res) => {
         })
 }
 
+const addMessage = (req, res) => {
+    const params = {
+        chatId: req.body.chatId,
+        userId: req.body.decoded.userId,
+        text: req.body.message
+    }
+    chat.addMessage(params)
+        .then(({ createdAt, chatUsers }) => {
+            req.io.emitSmart(chatUsers, 'new-message', ({
+                userId: req.body.decoded.userId,
+                message: req.body.message,
+                createdAt
+            }))
+            res.status(200).send({
+                status: 'success',
+                createdAt
+            })
+        })
+        .catch(err => {
+            console.error(err)
+            res.status(500).send({
+                status: 'error',
+                message: 'Error with adding a new message to the db'
+            })
+        })
+}
+
 module.exports = {
     chatsList,
     messages,
+    addMessage,
 }

@@ -44,8 +44,12 @@ const login = (req, res, next) => {
 
             if (userId) {
                 generateToken(userId)
-                    .then(jwt =>
-                        res.status(200).send({ status: 'success', jwt }))
+                    .then(token =>
+                        res.status(200).send({
+                            status: 'success',
+                            userId,
+                            token
+                        }))
             } else res.status(401).send({
                 status: 'error',
                 message: 'Your email or password is incorrect'

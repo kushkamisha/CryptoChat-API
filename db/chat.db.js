@@ -19,7 +19,24 @@ const getMessages = chatId =>
         where "ChatId" = $1
         order by "CreatedAt";`, [chatId])
 
+const addMessage = (chatId, userId, text) =>
+    query(`
+        insert into "ChatMessage"("ChatId", "UserId", "MessageText")
+        values ($1, $2, $3) returning "CreatedAt";`, [chatId, userId, text])
+
+const getMessageById = id =>
+    query(`
+        select "ChatId", "UserId", "MessageText", "CreatedAt"
+        from "ChatMessage"
+        where "ChatMessageId" = $1;`, [id])
+
+const getChatUsers = chatId =>
+    query('select "UserId" from "ChatUser" where "ChatId" = $1;', [chatId])
+
 module.exports = {
     getPersonalChats,
     getMessages,
+    addMessage,
+    getMessageById,
+    getChatUsers,
 }

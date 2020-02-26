@@ -14,8 +14,8 @@ const chatsList = ({ userId }) => new Promise((resolve, reject) =>
         })
         .catch(reject))
 
-const messages = ({ chatId }) => new Promise((resolve, reject) =>
-    chat.getMessages(chatId)
+const messages = ({ chatId, userId, text }) => new Promise((resolve, reject) =>
+    chat.getMessages(chatId, userId, text)
         .then(msgs => {
             msgs = msgs.map(x => ({
                 userId: x.UserId,
@@ -27,7 +27,23 @@ const messages = ({ chatId }) => new Promise((resolve, reject) =>
         })
         .catch(reject))
 
+
+const addMessage = ({ chatId, userId, text }) =>
+    new Promise((resolve, reject) =>
+        Promise.all([
+            chat.addMessage(chatId, userId, text),
+            chat.getChatUsers(chatId)
+        ])
+            .then(([[{ CreatedAt }], chatUsers]) => {
+                resolve({ createdAt: `${CreatedAt}`.slice(16, 21), chatUsers })
+            })
+            .catch(reject))
+
+const getMessageById = msgId => chat.getMessageById(msgId)
+
 module.exports = {
     chatsList,
     messages,
+    addMessage,
+    getMessageById,
 }

@@ -22,6 +22,7 @@ const verifySocketToken = (socket, next) => {
     verifyToken(token)
         .then(({ userId }) => {
             console.log({ userId })
+            socket.userId = userId
             next()
         })
         .catch(() =>

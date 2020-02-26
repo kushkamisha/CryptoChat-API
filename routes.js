@@ -10,6 +10,7 @@ r.post('/auth/login',    auth.login)
 
 r.get('/chat/chatList',        verifyAppToken, chat.chatsList)
 r.get('/chat/messages',        verifyAppToken, chat.messages)
+r.post('/chat/message',        verifyAppToken, chat.addMessage)
 
 r.get('/bc/balanceInAddress',  verifyAppToken, blockchain.balanceInAddress)
 r.get('/bc/balanceInContract', verifyAppToken, blockchain.balanceInContract)
