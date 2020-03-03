@@ -16,13 +16,19 @@ const register = (req, res, next) => {
         email, pass, firstName, middleName, lastName, birthDate,
         keywordsArr, description
     )
-        .then(({ userId, prKey }) => {
+        .then(({ userId, address, prKey }) => {
             logger.info(`Register result: ${!!userId}. User id: ${userId}`)
 
             if (userId) {
                 generateToken(userId)
-                    .then(jwt =>
-                        res.status(200).send({ status: 'success', jwt, prKey }))
+                    .then(token =>
+                        res.status(200).send({
+                            status: 'success',
+                            userId,
+                            address,
+                            prKey,
+                            token
+                        }))
             } else res.status(409).send({
                 status: 'error',
                 message: 'There is already a user with such username. Maybe, \
@@ -34,6 +40,24 @@ that\'s your old account'
         .catch(err => {
             console.error({ err })
             res.sendStatus(500) && next(console.error(err))
+        })
+}
+
+const updateUserData = (req, res) => {
+    const keywords = req.body.keywords
+    const keywordsArr = keywords ? keywords.split(',').map(x => x.trim()) : []
+    auth.updateUserData({
+        userId: req.body.decoded.userId,
+        keywords: keywordsArr,
+        description: req.body.description
+    })
+        .then(() => res.status(200).send({
+            status: 'success',
+            message: 'User data were updated'
+        }))
+        .catch(err => {
+            console.error(err)
+            res.sendStatus(500)
         })
 }
 
@@ -65,5 +89,6 @@ const login = (req, res, next) => {
 
 module.exports = {
     register,
+    updateUserData,
     login,
 }

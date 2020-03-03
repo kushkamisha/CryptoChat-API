@@ -8,6 +8,12 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
     new Promise((resolve, reject) =>
         hash(pass)
             .then(passwordHash => {
+                if (!firstName) firstName = undefined
+                if (!middleName) middleName = undefined
+                if (!lastName) lastName = undefined
+                if (!birthDate) birthDate = undefined
+                if (!description) description = undefined
+
                 logger.debug({ passwordHash })
 
                 auth.checkUniqueness(email)
@@ -30,14 +36,22 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
                     .then(res => {
                         const userId = res[0].UserId
                         logger.debug({ userId })
-                        return auth.setUserKeywords(keywords, userId)
+                        return auth.setUserKeywords(userId, keywords)
                     })
                     .then(userId => auth.createWallet(userId))
-                    .then(({ userId, prKey }) => resolve({ userId, prKey }))
+                    .then(({ userId, address, prKey }) =>
+                        resolve({ userId, address, prKey }))
                     .catch(err => {
                         if (err.name !== 'BreakPromiseChainError') reject(err)
                     })
             }))
+
+const updateUserData = ({ userId, keywords, description }) =>
+    new Promise((resolve, reject) =>
+        auth.setUserKeywords(userId, keywords)
+            .then(userId => auth.setUserDescription(userId, description))
+            .then(resolve)
+            .catch(reject))
 
 const login = ({ email, pass }) => new Promise((resolve, reject) =>
     auth.login(email)
@@ -59,5 +73,6 @@ const login = ({ email, pass }) => new Promise((resolve, reject) =>
 
 module.exports = {
     register,
-    login
+    updateUserData,
+    login,
 }

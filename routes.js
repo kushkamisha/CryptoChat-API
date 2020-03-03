@@ -5,8 +5,9 @@ const { verifyAppToken } = require('./middleware')
 // eslint-disable-next-line new-cap
 const r = express.Router()
 
-r.post('/auth/register', auth.register)
-r.post('/auth/login',    auth.login)
+r.post('/auth/register',       auth.register)
+r.post('/auth/updateUserData', verifyAppToken, auth.updateUserData)
+r.post('/auth/login',          auth.login)
 
 r.get('/chat/chatList',        verifyAppToken, chat.chatsList)
 r.get('/chat/messages',        verifyAppToken, chat.messages)

@@ -19,7 +19,7 @@ const registerUser = (email, firstName, middleName, lastName, birthDate,
         ) values ($1, $2, $3, $4, $5, $6, $7) returning "UserId"`,
     [email, firstName, middleName, lastName, birthDate, description, pass])
 
-const setUserKeywords = (keywords, userId) => new Promise((resolve, reject) => {
+const setUserKeywords = (userId, keywords) => new Promise((resolve, reject) => {
     const queries = []
 
     keywords.forEach(keyword =>
@@ -33,13 +33,18 @@ const setUserKeywords = (keywords, userId) => new Promise((resolve, reject) => {
         .catch(err => reject(err))
 })
 
+const setUserDescription = (userId, description) =>
+    query(`
+        update "User" set "Description" = $1
+        where "UserId" = $2;`, [description, userId])
+
 const createWallet = userId => new Promise((resolve, reject) => {
     const [address, prKey] = generateKeys()
     logger.debug({ address, prKey })
 
     query(`insert into "Wallet" ("UserId", "Address")
-        values ($1, $2)`, [userId, address])
-        .then(() => resolve({ userId, prKey }))
+        values ($1, $2) returning "Address"`, [userId, address])
+        .then(() => resolve({ userId, address, prKey }))
         .catch(err => reject(err))
 })
 
@@ -49,6 +54,7 @@ module.exports = {
     checkUniqueness,
     registerUser,
     setUserKeywords,
+    setUserDescription,
     createWallet,
     login,
 }
