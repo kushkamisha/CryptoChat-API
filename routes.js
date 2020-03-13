@@ -18,6 +18,8 @@ r.post('/chat/message',        verifyAppToken, chat.addMessage)
 r.get('/bc/balanceInAddress',  verifyAppToken, blockchain.balanceInAddress)
 r.get('/bc/balanceInContract', verifyAppToken, blockchain.balanceInContract)
 r.post('/bc/signTransfer',     verifyAppToken, blockchain.signTransfer)
+r.post('/bc/signTransferByUserId', verifyAppToken,
+    blockchain.signTransferByUserId)
 r.get('/bc/verifyTranfer',     verifyAppToken, blockchain.verifyTransfer)
 r.post('/bc/publishTransfer',  verifyAppToken, blockchain.publishTransfer)
 

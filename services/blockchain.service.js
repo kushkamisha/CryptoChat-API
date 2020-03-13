@@ -51,6 +51,32 @@ const signTransfer = ({ from, to, amount, prKey }) =>
             })
             .catch(reject))
 
+const signTransferByUserId = ({ fromUserId, toUserId, amount, prKey }) =>
+    new Promise((resolve, reject) =>
+        Promise.all([
+            getUserAddress(fromUserId),
+            getUserAddress(toUserId)
+        ]).then(([[{ Address: from }], [{ Address: to }]]) =>
+            Promise.all([
+                contract.transfer({ from, to, amount: toWei(amount), prKey }),
+                from,
+                to
+            ]))
+            .then(([tx, from, to]) => {
+                logger.debug({ tx })
+                const isGood = checkSignedFunc({
+                    rawTx: tx.rawTransaction,
+                    from,
+                    params: ['address', 'uint256'],
+                    paramsCheck: [to, amount],
+                    func: 'transfer'
+                })
+
+                if (isGood) resolve(tx)
+                else reject()
+            })
+            .catch(reject))
+
 const publishTransfer = rawTx =>
     new Promise((resolve, reject) => {
         console.log({ rawTx })
@@ -79,6 +105,7 @@ module.exports = {
     balanceInAddress,
     balanceInContract,
     signTransfer,
+    signTransferByUserId,
     verifyTransfer,
     publishTransfer,
 }

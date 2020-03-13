@@ -62,6 +62,35 @@ const signTransfer = (req, res) => {
         })
 }
 
+const signTransferByUserId = (req, res) => {
+    /**
+     * @todo vadidate from, to, amount, prKey
+     */
+    blockchain.signTransferByUserId({
+        fromUserId: req.body.decoded.userId,
+        toUserId: req.body.toUserId,
+        amount: req.body.amount,
+        prKey: req.body.prKey
+    })
+        .then(tx => {
+            logger.debug({ tx })
+            res.status(200).send({
+                status: 'success',
+                rawTx: tx.rawTransaction
+            })
+        })
+        .catch(err => {
+            if (err.code === 'INVALID_ARGUMENT' && err.arg === 'amount') {
+                return res.send({
+                    status: 'error',
+                    message: 'Insufficient funds'
+                })
+            }
+            console.error(err)
+            res.sendStatus(500)
+        })
+}
+
 const publishTransfer = (req, res) => {
     /**
      * @todo validate rawTx
@@ -106,6 +135,7 @@ module.exports = {
     balanceInAddress,
     balanceInContract,
     signTransfer,
+    signTransferByUserId,
     verifyTransfer,
     publishTransfer,
 }
