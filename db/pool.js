@@ -10,6 +10,6 @@ const pool = new Pool({
     port: db.port
 })
 
-pool.on('error', err => logger.error(`Unexpected error on idle client ${err}`))
+pool.on('error', err => console.error(`Unexpected error on idle client ${err}`))
 
 module.exports = pool

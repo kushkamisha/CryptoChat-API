@@ -16,7 +16,7 @@ const balanceInAddress = (req, res) => {
             })
         })
         .catch(err => {
-            logger.error(err)
+            console.error(err)
             res.sendStatus(500)
         })
 }
@@ -33,7 +33,7 @@ const balanceInContract = (req, res) => {
             })
         })
         .catch(err => {
-            logger.error(err)
+            console.error(err)
             res.sendStatus(500)
         })
 }
@@ -51,7 +51,13 @@ const signTransfer = (req, res) => {
             })
         })
         .catch(err => {
-            logger.error(err)
+            if (err.code === 'INVALID_ARGUMENT' && err.arg === 'amount') {
+                return res.send({
+                    status: 'error',
+                    message: 'Insufficient funds'
+                })
+            }
+            console.error(err)
             res.sendStatus(500)
         })
 }
@@ -71,7 +77,7 @@ const publishTransfer = (req, res) => {
             })
         })
         .catch(err => {
-            logger.error(err)
+            console.error(err)
             console.log({ err })
             res.sendStatus(500)
         })

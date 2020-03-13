@@ -7,6 +7,9 @@ const chatsList = ({ userId }) => new Promise((resolve, reject) =>
             chats = chats.map(x => ({
                 userId: x.UserId,
                 chatId: x.ChatId,
+                chatType: x.ChatType,
+                fromUser: x.FromUser,
+                toUser: x.ToUser,
                 firstName: x.FirstName,
                 lastName: x.LastName
             }))
@@ -14,8 +17,21 @@ const chatsList = ({ userId }) => new Promise((resolve, reject) =>
         })
         .catch(reject))
 
-const messages = ({ chatId, userId, text }) => new Promise((resolve, reject) =>
-    chat.getMessages(chatId, userId, text)
+const messages = chatId => new Promise((resolve, reject) =>
+    chat.getMessages(chatId)
+        .then(msgs => {
+            msgs = msgs.map(x => ({
+                userId: x.UserId,
+                text: x.MessageText,
+                isRead: x.IsRead,
+                time: `${x.CreatedAt}`.slice(16, 21)
+            }))
+            resolve(msgs)
+        })
+        .catch(reject))
+
+const unreadMessages = (chatId, userId) => new Promise((resolve, reject) =>
+    chat.getUnreadMessages(chatId, userId)
         .then(msgs => {
             msgs = msgs.map(x => ({
                 userId: x.UserId,
@@ -38,11 +54,14 @@ const addMessage = ({ chatId, userId, text }) =>
             })
             .catch(reject))
 
+// const readMessages = ({ chatId, userId }) => {}
+
 const getMessageById = msgId => chat.getMessageById(msgId)
 
 module.exports = {
     chatsList,
     messages,
+    unreadMessages,
     addMessage,
     getMessageById,
 }

@@ -1,5 +1,3 @@
-
-
 const { web3 } = require('../blockchain')
 const { getUserAddress } = require('../db/blockchain.db')
 const { contract } = require('../blockchain/singletons')
@@ -17,7 +15,7 @@ const balanceInAddress = userId =>
             })
             .then(balance => resolve(balance))
             .catch(err => {
-                logger.error({ err })
+                console.error({ err })
                 reject(err)
             }))
 
@@ -31,7 +29,7 @@ const balanceInContract = userId =>
             })
             .then(balance => resolve(balance))
             .catch(err => {
-                logger.error({ err })
+                console.error({ err })
                 reject(err)
             }))
 
@@ -39,7 +37,7 @@ const signTransfer = ({ from, to, amount, prKey }) =>
     new Promise((resolve, reject) =>
         contract.transfer({ from, to, amount: toWei(amount), prKey })
             .then(tx => {
-                logger.debug(tx)
+                logger.debug({ tx })
                 const isGood = checkSignedFunc({
                     rawTx: tx.rawTransaction,
                     from,
@@ -50,7 +48,8 @@ const signTransfer = ({ from, to, amount, prKey }) =>
 
                 if (isGood) resolve(tx)
                 else reject()
-            }))
+            })
+            .catch(reject))
 
 const publishTransfer = rawTx =>
     new Promise((resolve, reject) => {

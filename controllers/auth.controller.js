@@ -82,7 +82,7 @@ const login = (req, res, next) => {
             next()
         })
         .catch(err => {
-            logger.error({ err })
+            console.error({ err })
             res.sendStatus(500)
         })
 }

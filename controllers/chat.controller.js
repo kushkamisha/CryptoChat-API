@@ -11,7 +11,7 @@ const chatsList = (req, res) => {
             })
         })
         .catch(err => {
-            logger.error(err)
+            console.error(err)
             res.status(500).send({
                 status: 'error',
                 message: 'Error while receiving the list of chats from the db'
@@ -20,7 +20,24 @@ const chatsList = (req, res) => {
 }
 
 const messages = (req, res) => {
-    chat.messages({ chatId: req.query.chatId })
+    chat.messages(req.query.chatId)
+        .then(messages => {
+            res.status(200).send({
+                status: 'success',
+                messages
+            })
+        })
+        .catch(err => {
+            console.error(err)
+            res.status(500).send({
+                status: 'error',
+                message: 'Error with reading chat messages from the db'
+            })
+        })
+}
+
+const unreadMessages = (req, res) => {
+    chat.unreadMessages(req.query.chatId, req.query.userId)
         .then(messages => {
             res.status(200).send({
                 status: 'success',
@@ -70,5 +87,6 @@ const addMessage = (req, res) => {
 module.exports = {
     chatsList,
     messages,
+    unreadMessages,
     addMessage,
 }

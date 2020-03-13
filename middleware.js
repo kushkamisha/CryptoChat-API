@@ -26,7 +26,7 @@ const verifySocketToken = (socket, next) => {
             next()
         })
         .catch(() =>
-            logger.error('Invalid token is provided via a socket connetion'))
+            console.error('Invalid token is provided via a socket connetion'))
 }
 
 module.exports = {

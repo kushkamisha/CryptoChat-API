@@ -2,7 +2,8 @@ const { query } = require('../utils/db')
 
 const getPersonalChats = userId =>
     query(`
-        select "User"."UserId", "Chat"."ChatId", "FirstName", "LastName"
+        select "User"."UserId", "Chat"."ChatId", "ChatType", "FromUser",
+            "ToUser", "FirstName", "LastName"
         from "ChatUser"
         inner join "Chat" on "Chat"."ChatId" = "ChatUser"."ChatId"
         inner join "User" on "User"."UserId" = "ChatUser"."UserId"
@@ -14,10 +15,17 @@ const getPersonalChats = userId =>
 
 const getMessages = chatId =>
     query(`
-        select "UserId", "MessageText", "CreatedAt"
+        select "UserId", "MessageText", "IsRead", "CreatedAt"
         from "ChatMessage"
         where "ChatId" = $1
         order by "CreatedAt";`, [chatId])
+
+const getUnreadMessages = (chatId, userId) =>
+    query(`
+        select "UserId", "MessageText", "CreatedAt"
+        from "ChatMessage"
+        where "ChatId" = $1 and "IsRead" = false and "UserId" != $2
+        order by "CreatedAt";`, [chatId, userId])
 
 const addMessage = (chatId, userId, text) =>
     query(`
@@ -36,6 +44,7 @@ const getChatUsers = chatId =>
 module.exports = {
     getPersonalChats,
     getMessages,
+    getUnreadMessages,
     addMessage,
     getMessageById,
     getChatUsers,
