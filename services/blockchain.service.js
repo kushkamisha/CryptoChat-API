@@ -1,5 +1,5 @@
 const { web3 } = require('../blockchain')
-const { getUserAddress } = require('../db/blockchain.db')
+const db = require('../db/blockchain.db')
 const { contract } = require('../blockchain/singletons')
 const logger = require('../logger')
 const { checkSignedFunc } = require('../utils/blockchain')
@@ -7,7 +7,7 @@ const { toWei } = require('../utils/blockchain')
 
 const balanceInAddress = userId =>
     new Promise((resolve, reject) =>
-        getUserAddress(userId)
+        db.getUserAddress(userId)
             .then(res => {
                 const address = res[0].Address
                 logger.debug(`User address: ${address}`)
@@ -21,7 +21,7 @@ const balanceInAddress = userId =>
 
 const balanceInContract = userId =>
     new Promise((resolve, reject) =>
-        getUserAddress(userId)
+        db.getUserAddress(userId)
             .then(res => {
                 const address = res[0].Address
                 logger.debug(`User address: ${address}`)
@@ -54,8 +54,8 @@ const signTransfer = ({ from, to, amount, prKey }) =>
 const signTransferByUserId = ({ fromUserId, toUserId, amount, prKey }) =>
     new Promise((resolve, reject) =>
         Promise.all([
-            getUserAddress(fromUserId),
-            getUserAddress(toUserId)
+            db.getUserAddress(fromUserId),
+            db.getUserAddress(toUserId)
         ]).then(([[{ Address: from }], [{ Address: to }]]) =>
             Promise.all([
                 contract.transfer({ from, to, amount: toWei(amount), prKey }),
@@ -72,9 +72,17 @@ const signTransferByUserId = ({ fromUserId, toUserId, amount, prKey }) =>
                     func: 'transfer'
                 })
 
-                if (isGood) resolve(tx)
+                if (isGood) return tx
                 else reject()
             })
+            .then(tx => {
+                console.log(fromUserId, toUserId, tx.rawTransaction)
+                return Promise.all([
+                    db.saveTransfer(fromUserId, toUserId, tx.rawTransaction),
+                    tx
+                ])
+            })
+            .then(([, tx]) => resolve(tx))
             .catch(reject))
 
 const publishTransfer = rawTx =>
