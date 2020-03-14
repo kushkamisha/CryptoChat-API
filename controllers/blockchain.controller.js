@@ -72,11 +72,12 @@ const signTransferByUserId = (req, res) => {
         amount: req.body.amount,
         prKey: req.body.prKey
     })
-        .then(tx => {
-            logger.debug({ tx })
+        .then(([totalAmount, tx]) => {
+            logger.debug({ totalAmount, tx })
             res.status(200).send({
                 status: 'success',
-                rawTx: tx.rawTransaction
+                rawTx: tx.rawTransaction,
+                totalAmount
             })
         })
         .catch(err => {

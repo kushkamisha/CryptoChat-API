@@ -1,4 +1,3 @@
-const logger = require('../logger')
 const { chat } = require('../db')
 
 const chatsList = ({ userId }) => new Promise((resolve, reject) =>

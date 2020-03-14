@@ -21,7 +21,7 @@ const lastUnpublishedTxAmountForChat = (from, to) =>
         where "FromUserId" = $1 and
               "ToUserId" = $2 and
               "TransactionStatus" = 'unpublished'
-        order by "TransactionAmountWei" desc
+        order by "TransactionAmountWei"::bigint desc
         limit 1;`, [from, to])
 
 module.exports = {

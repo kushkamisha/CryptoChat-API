@@ -67,6 +67,7 @@ const addMessage = (req, res) => {
             // }))
             req.io.emit('new-message', ({
                 userId: req.body.decoded.userId,
+                chatId: req.body.chatId,
                 message: req.body.message,
                 createdAt
             }))

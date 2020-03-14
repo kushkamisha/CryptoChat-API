@@ -61,8 +61,11 @@ const signTransferByUserId = ({ fromUserId, toUserId, amount, prKey }) =>
             .then(([
                 [{ Address: from }],
                 [{ Address: to }],
-                [{ TransactionAmountWei: lastAmount }]
+                txAmount
             ]) => {
+                const lastAmount = txAmount.length ?
+                    txAmount[0].TransactionAmountWei : 0
+                console.log({ txAmount, lastAmount })
                 const fullAmount = parseInt(lastAmount) + toWei(amount)
                 console.log({ fullAmount })
                 return Promise.all([
@@ -97,11 +100,15 @@ const signTransferByUserId = ({ fromUserId, toUserId, amount, prKey }) =>
                             fullAmount,
                             tx.rawTransaction
                         ),
+                        fullAmount,
                         tx
                     ])
                 } else reject(new Error('The transaction is not valid'))
             })
-            .then(([, tx]) => resolve(tx))
+            .then(([, fullAmount, tx]) => {
+                console.log({ tx })
+                resolve([fullAmount, tx])
+            })
             .catch(reject))
 
 const publishTransfer = rawTx =>
