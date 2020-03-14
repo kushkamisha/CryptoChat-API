@@ -42,7 +42,7 @@ const signTransfer = ({ from, to, amount, prKey }) =>
                     rawTx: tx.rawTransaction,
                     from,
                     params: ['address', 'uint256'],
-                    paramsCheck: [to, amount],
+                    paramsCheck: [to, toWei(amount)],
                     func: 'transfer'
                 })
 
@@ -55,32 +55,51 @@ const signTransferByUserId = ({ fromUserId, toUserId, amount, prKey }) =>
     new Promise((resolve, reject) =>
         Promise.all([
             db.getUserAddress(fromUserId),
-            db.getUserAddress(toUserId)
-        ]).then(([[{ Address: from }], [{ Address: to }]]) =>
-            Promise.all([
-                contract.transfer({ from, to, amount: toWei(amount), prKey }),
-                from,
-                to
-            ]))
-            .then(([tx, from, to]) => {
-                logger.debug({ tx })
+            db.getUserAddress(toUserId),
+            db.lastUnpublishedTxAmountForChat(fromUserId, toUserId)
+        ])
+            .then(([
+                [{ Address: from }],
+                [{ Address: to }],
+                [{ TransactionAmountWei: lastAmount }]
+            ]) => {
+                const fullAmount = parseInt(lastAmount) + toWei(amount)
+                console.log({ fullAmount })
+                return Promise.all([
+                    contract.transfer({
+                        from,
+                        to,
+                        amount: fullAmount,
+                        prKey
+                    }),
+                    from,
+                    to,
+                    fullAmount
+                ])
+            })
+            .then(([tx, from, to, fullAmount]) => {
                 const isGood = checkSignedFunc({
                     rawTx: tx.rawTransaction,
                     from,
                     params: ['address', 'uint256'],
-                    paramsCheck: [to, amount],
+                    paramsCheck: [to, fullAmount],
                     func: 'transfer'
                 })
 
-                if (isGood) return tx
-                else reject()
-            })
-            .then(tx => {
-                console.log(fromUserId, toUserId, tx.rawTransaction)
-                return Promise.all([
-                    db.saveTransfer(fromUserId, toUserId, tx.rawTransaction),
-                    tx
-                ])
+                console.log({ isGood })
+
+                if (isGood) {
+                    console.log({ tx })
+                    return Promise.all([
+                        db.saveTransfer(
+                            fromUserId,
+                            toUserId,
+                            fullAmount,
+                            tx.rawTransaction
+                        ),
+                        tx
+                    ])
+                } else reject(new Error('The transaction is not valid'))
             })
             .then(([, tx]) => resolve(tx))
             .catch(reject))
