@@ -84,6 +84,17 @@ const addMessage = (req, res) => {
         })
 }
 
+const readMessages = (req, res) =>
+    chat.readMessages(req.query.chatId, req.query.userId)
+        .then(res.status(200).send({ status: 'success' }))
+        .catch(err => {
+            console.error(err)
+            res.status(500).send({
+                status: 'error',
+                message: 'Error with updating messages status'
+            })
+        })
+
 module.exports = {
     chatsList,
     messages,

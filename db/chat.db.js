@@ -41,6 +41,9 @@ const getMessageById = id =>
 const getChatUsers = chatId =>
     query('select "UserId" from "ChatUser" where "ChatId" = $1;', [chatId])
 
+const readMessages = (chatId, userId) =>
+    query(``, [chatId, userId])
+
 module.exports = {
     getPersonalChats,
     getMessages,
@@ -48,4 +51,5 @@ module.exports = {
     addMessage,
     getMessageById,
     getChatUsers,
+    readMessages,
 }
