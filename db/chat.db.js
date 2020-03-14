@@ -42,7 +42,10 @@ const getChatUsers = chatId =>
     query('select "UserId" from "ChatUser" where "ChatId" = $1;', [chatId])
 
 const readMessages = (chatId, userId) =>
-    query(``, [chatId, userId])
+    query(`
+    update "ChatMessage"
+    set "IsRead" = true
+    where "ChatId" = $1 and "UserId" != $2;`, [chatId, userId])
 
 module.exports = {
     getPersonalChats,

@@ -1,8 +1,8 @@
 const logger = require('../logger')
-const { db } = require('../db')
+const { chat } = require('../db')
 
 const chatsList = ({ userId }) => new Promise((resolve, reject) =>
-    db.getPersonalChats(userId)
+    chat.getPersonalChats(userId)
         .then(chats => {
             chats = chats.map(x => ({
                 userId: x.UserId,
@@ -18,7 +18,7 @@ const chatsList = ({ userId }) => new Promise((resolve, reject) =>
         .catch(reject))
 
 const messages = chatId => new Promise((resolve, reject) =>
-    db.getMessages(chatId)
+    chat.getMessages(chatId)
         .then(msgs => {
             msgs = msgs.map(x => ({
                 userId: x.UserId,
@@ -31,7 +31,7 @@ const messages = chatId => new Promise((resolve, reject) =>
         .catch(reject))
 
 const unreadMessages = (chatId, userId) => new Promise((resolve, reject) =>
-    db.getUnreadMessages(chatId, userId)
+    chat.getUnreadMessages(chatId, userId)
         .then(msgs => {
             msgs = msgs.map(x => ({
                 userId: x.UserId,
@@ -46,17 +46,17 @@ const unreadMessages = (chatId, userId) => new Promise((resolve, reject) =>
 const addMessage = ({ chatId, userId, text }) =>
     new Promise((resolve, reject) =>
         Promise.all([
-            db.addMessage(chatId, userId, text),
-            db.getChatUsers(chatId)
+            chat.addMessage(chatId, userId, text),
+            chat.getChatUsers(chatId)
         ])
             .then(([[{ CreatedAt }], chatUsers]) => {
                 resolve({ createdAt: `${CreatedAt}`.slice(16, 21), chatUsers })
             })
             .catch(reject))
 
-const readMessages = (chatId, userId) => db.readMessages(chatId, userId)
+const readMessages = (chatId, userId) => chat.readMessages(chatId, userId)
 
-const getMessageById = msgId => db.getMessageById(msgId)
+const getMessageById = msgId => chat.getMessageById(msgId)
 
 module.exports = {
     chatsList,

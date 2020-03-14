@@ -85,7 +85,7 @@ const addMessage = (req, res) => {
 }
 
 const readMessages = (req, res) =>
-    chat.readMessages(req.query.chatId, req.query.userId)
+    chat.readMessages(req.body.chatId, req.body.decoded.userId)
         .then(res.status(200).send({ status: 'success' }))
         .catch(err => {
             console.error(err)
@@ -100,4 +100,5 @@ module.exports = {
     messages,
     unreadMessages,
     addMessage,
+    readMessages,
 }
