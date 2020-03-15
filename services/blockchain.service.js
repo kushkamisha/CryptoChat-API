@@ -63,10 +63,11 @@ const signTransferByUserId = ({ msgId, fromUserId, toUserId, amount, prKey }) =>
                 [{ Address: to }],
                 txAmount
             ]) => {
+                console.log({ msgId, fromUserId, toUserId, amount, prKey })
                 const lastAmount = txAmount.length ?
                     txAmount[0].TransactionAmountWei : 0
                 console.log({ txAmount, lastAmount })
-                const fullAmount = parseInt(lastAmount) + toWei(amount)
+                const fullAmount = parseInt(lastAmount) + parseInt(amount)
                 console.log({ fullAmount })
                 return Promise.all([
                     contract.transfer({
@@ -92,7 +93,6 @@ const signTransferByUserId = ({ msgId, fromUserId, toUserId, amount, prKey }) =>
                 console.log({ isGood })
 
                 if (isGood) {
-                    console.log({ tx })
                     return Promise.all([
                         db.saveTransfer(
                             fromUserId,
@@ -106,11 +106,7 @@ const signTransferByUserId = ({ msgId, fromUserId, toUserId, amount, prKey }) =>
                     ])
                 } else reject(new Error('The transaction is not valid'))
             })
-            .then(([saveStatus, readStatus, fullAmount, tx]) => {
-                console.log({ saveStatus, readStatus })
-                console.log({ tx })
-                resolve([fullAmount, tx])
-            })
+            .then(([,, fullAmount, tx]) => resolve([fullAmount, tx]))
             .catch(reject))
 
 const publishTransfer = rawTx =>

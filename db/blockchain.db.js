@@ -1,5 +1,3 @@
-
-
 const { query } = require('../utils/db')
 
 const getUserAddress = userId =>
@@ -28,7 +26,7 @@ const readMessage = msgId =>
     query(`
         update "ChatMessage"
         set "IsRead" = true
-        where "ChatMessageId" != $1;`, [msgId])
+        where "ChatMessageId" = $1;`, [msgId])
 
 module.exports = {
     getUserAddress,

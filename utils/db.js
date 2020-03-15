@@ -1,5 +1,3 @@
-
-
 const pool = require('../db/pool')
 
 const query = (queryString, params = []) => new Promise((resolve, reject) =>
