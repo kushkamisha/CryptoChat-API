@@ -20,6 +20,7 @@ const messages = chatId => new Promise((resolve, reject) =>
     chat.getMessages(chatId)
         .then(msgs => {
             msgs = msgs.map(x => ({
+                msgId: x.ChatMessageId,
                 userId: x.UserId,
                 text: x.MessageText,
                 isRead: x.IsRead,

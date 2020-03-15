@@ -15,7 +15,7 @@ const getPersonalChats = userId =>
 
 const getMessages = chatId =>
     query(`
-        select "UserId", "MessageText", "IsRead", "CreatedAt"
+        select "ChatMessageId", "UserId", "MessageText", "IsRead", "CreatedAt"
         from "ChatMessage"
         where "ChatId" = $1
         order by "CreatedAt";`, [chatId])

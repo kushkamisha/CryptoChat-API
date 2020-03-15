@@ -51,7 +51,7 @@ const signTransfer = ({ from, to, amount, prKey }) =>
             })
             .catch(reject))
 
-const signTransferByUserId = ({ fromUserId, toUserId, amount, prKey }) =>
+const signTransferByUserId = ({ msgId, fromUserId, toUserId, amount, prKey }) =>
     new Promise((resolve, reject) =>
         Promise.all([
             db.getUserAddress(fromUserId),
@@ -100,12 +100,14 @@ const signTransferByUserId = ({ fromUserId, toUserId, amount, prKey }) =>
                             fullAmount,
                             tx.rawTransaction
                         ),
+                        db.readMessage(msgId),
                         fullAmount,
                         tx
                     ])
                 } else reject(new Error('The transaction is not valid'))
             })
-            .then(([, fullAmount, tx]) => {
+            .then(([saveStatus, readStatus, fullAmount, tx]) => {
+                console.log({ saveStatus, readStatus })
                 console.log({ tx })
                 resolve([fullAmount, tx])
             })

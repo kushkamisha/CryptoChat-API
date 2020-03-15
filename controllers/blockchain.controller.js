@@ -67,6 +67,7 @@ const signTransferByUserId = (req, res) => {
      * @todo vadidate from, to, amount, prKey
      */
     blockchain.signTransferByUserId({
+        msgId: req.body.msgId,
         fromUserId: req.body.decoded.userId,
         toUserId: req.body.toUserId,
         amount: req.body.amount,

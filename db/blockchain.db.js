@@ -24,8 +24,15 @@ const lastUnpublishedTxAmountForChat = (from, to) =>
         order by "TransactionAmountWei"::bigint desc
         limit 1;`, [from, to])
 
+const readMessage = msgId =>
+    query(`
+        update "ChatMessage"
+        set "IsRead" = true
+        where "ChatMessageId" != $1;`, [msgId])
+
 module.exports = {
     getUserAddress,
     saveTransfer,
     lastUnpublishedTxAmountForChat,
+    readMessage,
 }
