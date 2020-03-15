@@ -30,7 +30,8 @@ const getUnreadMessages = (chatId, userId) =>
 const addMessage = (chatId, userId, text) =>
     query(`
         insert into "ChatMessage"("ChatId", "UserId", "MessageText")
-        values ($1, $2, $3) returning "CreatedAt";`, [chatId, userId, text])
+        values ($1, $2, $3)
+        returning "CreatedAt", "ChatMessageId";`, [chatId, userId, text])
 
 const getMessageById = id =>
     query(`

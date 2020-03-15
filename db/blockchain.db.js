@@ -3,15 +3,16 @@ const { query } = require('../utils/db')
 const getUserAddress = userId =>
     query('select "Address" from "Wallet" where "UserId" = $1', [userId])
 
-const saveTransfer = (from, to, amount, tx) =>
+const saveTransfer = (from, to, msgId, amount, tx) =>
     query(`
         insert into "Transaction" (
             "FromUserId",
             "ToUserId",
+            "ForMessageId",
             "TransactionAmountWei",
-            "TransactionStatus",
             "RawTransaction"
-        ) values ($1, $2, $3, 'unpublished', $4)`, [from, to, amount, tx])
+        ) values ($1, $2, $3, $4, $5)`,
+    [from, to, msgId, amount, tx])
 
 const lastUnpublishedTxAmountForChat = (from, to) =>
     query(`
@@ -22,15 +23,8 @@ const lastUnpublishedTxAmountForChat = (from, to) =>
         order by "TransactionAmountWei"::bigint desc
         limit 1;`, [from, to])
 
-const readMessage = msgId =>
-    query(`
-        update "ChatMessage"
-        set "IsRead" = true
-        where "ChatMessageId" = $1;`, [msgId])
-
 module.exports = {
     getUserAddress,
     saveTransfer,
     lastUnpublishedTxAmountForChat,
-    readMessage,
 }

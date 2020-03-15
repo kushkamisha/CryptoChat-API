@@ -59,13 +59,15 @@ const addMessage = (req, res) => {
         userId: req.body.decoded.userId,
         text: req.body.message
     })
-        .then(({ createdAt, chatUsers }) => {
+        .then(({ chatMsgId, createdAt, chatUsers }) => {
             // req.io.emitSmart(chatUsers, 'new-message', ({
             //     userId: req.body.decoded.userId,
             //     message: req.body.message,
             //     createdAt
             // }))
+            console.log({ chatMsgId })
             req.io.emit('new-message', ({
+                msgId: chatMsgId,
                 userId: req.body.decoded.userId,
                 chatId: req.body.chatId,
                 message: req.body.message,

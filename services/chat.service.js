@@ -49,8 +49,12 @@ const addMessage = ({ chatId, userId, text }) =>
             chat.addMessage(chatId, userId, text),
             chat.getChatUsers(chatId)
         ])
-            .then(([[{ CreatedAt }], chatUsers]) => {
-                resolve({ createdAt: `${CreatedAt}`.slice(16, 21), chatUsers })
+            .then(([[{ CreatedAt, ChatMessageId }], chatUsers]) => {
+                resolve({
+                    chatMsgId: ChatMessageId,
+                    createdAt: `${CreatedAt}`.slice(16, 21),
+                    chatUsers
+                })
             })
             .catch(reject))
 

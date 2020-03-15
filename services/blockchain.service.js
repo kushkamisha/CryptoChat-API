@@ -91,22 +91,23 @@ const signTransferByUserId = ({ msgId, fromUserId, toUserId, amount, prKey }) =>
                 })
 
                 console.log({ isGood })
+                console.log({ tx })
 
                 if (isGood) {
                     return Promise.all([
                         db.saveTransfer(
                             fromUserId,
                             toUserId,
+                            msgId,
                             fullAmount,
                             tx.rawTransaction
                         ),
-                        db.readMessage(msgId),
                         fullAmount,
                         tx
                     ])
                 } else reject(new Error('The transaction is not valid'))
             })
-            .then(([,, fullAmount, tx]) => resolve([fullAmount, tx]))
+            .then(([, fullAmount, tx]) => resolve([fullAmount, tx]))
             .catch(reject))
 
 const publishTransfer = rawTx =>
