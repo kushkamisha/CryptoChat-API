@@ -1,10 +1,8 @@
 const { chat } = require('../services')
-const logger = require('../logger')
 
 const chatsList = (req, res) => {
     chat.chatsList({ userId: req.body.decoded.userId })
         .then(chats => {
-            logger.debug({ chats })
             res.status(200).send({
                 status: 'success',
                 chats

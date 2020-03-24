@@ -3,7 +3,7 @@ const { query } = require('../utils/db')
 const getPersonalChats = userId =>
     query(`
         select "User"."UserId", "Chat"."ChatId", "ChatType", "FromUser",
-            "ToUser", "FirstName", "LastName"
+            "ToUser", "FirstName", "LastName", "AvatarBase64"
         from "ChatUser"
         inner join "Chat" on "Chat"."ChatId" = "ChatUser"."ChatId"
         inner join "User" on "User"."UserId" = "ChatUser"."UserId"

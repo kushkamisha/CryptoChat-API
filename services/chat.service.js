@@ -10,7 +10,10 @@ const chatsList = ({ userId }) => new Promise((resolve, reject) =>
                 fromUser: x.FromUser,
                 toUser: x.ToUser,
                 firstName: x.FirstName,
-                lastName: x.LastName
+                lastName: x.LastName,
+                avatar: x.AvatarBase64,
+                lastMsgText: x.MessageText,
+                lastMsgTime: x.CreatedAt
             }))
             resolve(chats)
         })
