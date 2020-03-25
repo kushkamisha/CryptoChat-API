@@ -46,13 +46,6 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
                     })
             }))
 
-const updateUserData = ({ userId, keywords, description }) =>
-    new Promise((resolve, reject) =>
-        auth.setUserKeywords(userId, keywords)
-            .then(userId => auth.setUserDescription(userId, description))
-            .then(resolve)
-            .catch(reject))
-
 const login = ({ email, pass }) => new Promise((resolve, reject) =>
     auth.login(email)
         .then(res => {
@@ -71,8 +64,22 @@ const login = ({ email, pass }) => new Promise((resolve, reject) =>
         })
         .catch(err => reject(err)))
 
+const updateUserData = ({ userId, keywords, description }) =>
+    new Promise((resolve, reject) =>
+        auth.setUserKeywords(userId, keywords)
+            .then(userId => auth.setUserDescription(userId, description))
+            .then(resolve)
+            .catch(reject))
+
+const myProfile = userId =>
+    new Promise((resolve, reject) =>
+        auth.myProfile(userId)
+            .then(resolve)
+            .catch(reject))
+
 module.exports = {
     register,
-    updateUserData,
     login,
+    updateUserData,
+    myProfile,
 }

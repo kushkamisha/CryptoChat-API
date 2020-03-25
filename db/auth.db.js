@@ -50,6 +50,12 @@ const createWallet = userId => new Promise((resolve, reject) => {
 
 const login = email => query('select * from "User" where "Email" = $1', [email])
 
+const myProfile = userId => query(`
+    select "Email", "FirstName", "MiddleName", "LastName", "BirthDate",
+    "Description", "AvatarBase64"
+    from "User"
+    where "UserId" = $1;`, [userId])
+
 module.exports = {
     checkUniqueness,
     registerUser,
@@ -57,4 +63,5 @@ module.exports = {
     setUserDescription,
     createWallet,
     login,
+    myProfile,
 }

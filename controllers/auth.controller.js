@@ -43,24 +43,6 @@ that\'s your old account'
         })
 }
 
-const updateUserData = (req, res) => {
-    const keywords = req.body.keywords
-    const keywordsArr = keywords ? keywords.split(',').map(x => x.trim()) : []
-    auth.updateUserData({
-        userId: req.body.decoded.userId,
-        keywords: keywordsArr,
-        description: req.body.description
-    })
-        .then(() => res.status(200).send({
-            status: 'success',
-            message: 'User data were updated'
-        }))
-        .catch(err => {
-            console.error(err)
-            res.sendStatus(500)
-        })
-}
-
 const login = (req, res, next) => {
     auth.login(req.body)
         .then(userId => {
@@ -87,8 +69,52 @@ const login = (req, res, next) => {
         })
 }
 
+const updateUserData = (req, res) => {
+    const keywords = req.body.keywords
+    const keywordsArr = keywords ? keywords.split(',').map(x => x.trim()) : []
+    auth.updateUserData({
+        userId: req.body.decoded.userId,
+        keywords: keywordsArr,
+        description: req.body.description
+    })
+        .then(() => res.status(200).send({
+            status: 'success',
+            message: 'User data were updated'
+        }))
+        .catch(err => {
+            console.error(err)
+            res.sendStatus(500)
+        })
+}
+
+const myProfile = (req, res) => {
+    auth.myProfile(req.body.decoded.userId)
+        .then(([x]) => {
+            const date = new Date(x.BirthDate)
+            const year = date.getFullYear()
+            const month = date.getMonth()
+            const day = date.getDay()
+
+            res.status(200).send({
+                status: 'success',
+                email: x.Email,
+                firstName: x.FirstName,
+                middleName: x.MiddleName,
+                lastName: x.LastName,
+                birthDate: `${year} ${month} ${day}`,
+                description: x.Description,
+                avatar: x.AvatarBase64
+            })
+        })
+        .catch(err => {
+            console.error(err)
+            res.sendStatus(500)
+        })
+}
+
 module.exports = {
     register,
-    updateUserData,
     login,
+    updateUserData,
+    myProfile,
 }

@@ -6,8 +6,9 @@ const { verifyAppToken } = require('./middleware')
 const r = express.Router()
 
 r.post('/auth/register',       auth.register)
-r.post('/auth/updateUserData', verifyAppToken, auth.updateUserData)
 r.post('/auth/login',          auth.login)
+r.post('/auth/updateUserData', verifyAppToken, auth.updateUserData)
+r.get('/auth/myProfile',       verifyAppToken, auth.myProfile)
 
 r.get('/chat/chatList',        verifyAppToken, chat.chatsList)
 r.get('/chat/messages',        verifyAppToken, chat.messages)
