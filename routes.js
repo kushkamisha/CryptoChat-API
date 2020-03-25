@@ -1,5 +1,5 @@
 const express = require('express')
-const { auth, blockchain, chat } = require('./controllers')
+const { auth, bc, chat } = require('./controllers')
 const { verifyAppToken } = require('./middleware')
 
 // eslint-disable-next-line new-cap
@@ -16,12 +16,13 @@ r.get('/chat/unreadMessages',  verifyAppToken, chat.unreadMessages)
 r.post('/chat/message',        verifyAppToken, chat.addMessage)
 r.post('/chat/readMessages',   verifyAppToken, chat.readMessages)
 
-r.get('/bc/balanceInAddress',  verifyAppToken, blockchain.balanceInAddress)
-r.get('/bc/balanceInContract', verifyAppToken, blockchain.balanceInContract)
-r.post('/bc/signTransfer',     verifyAppToken, blockchain.signTransfer)
+r.get('/bc/balanceInAddress',  verifyAppToken, bc.balanceInAddress)
+r.get('/bc/balanceInContract', verifyAppToken, bc.balanceInContract)
+r.post('/bc/signTransfer',     verifyAppToken, bc.signTransfer)
 r.post('/bc/signTransferByUserId', verifyAppToken,
-    blockchain.signTransferByUserId)
-r.get('/bc/verifyTranfer',     verifyAppToken, blockchain.verifyTransfer)
-r.post('/bc/publishTransfer',  verifyAppToken, blockchain.publishTransfer)
+    bc.signTransferByUserId)
+r.get('/bc/verifyTranfer',     verifyAppToken, bc.verifyTransfer)
+r.post('/bc/publishTransfer',  verifyAppToken, bc.publishTransfer)
+// r.get('/bc/transfers',         verifyAppToken, bc.transfers)
 
 module.exports = r

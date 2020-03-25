@@ -1,9 +1,9 @@
-const { web3 } = require('../blockchain')
-const db = require('../db/blockchain.db')
-const { contract } = require('../blockchain/singletons')
+const { web3 } = require('../bc')
+const db = require('../db/bc.db')
+const { contract } = require('../bc/singletons')
 const logger = require('../logger')
-const { checkSignedFunc } = require('../utils/blockchain')
-const { toWei } = require('../utils/blockchain')
+const { checkSignedFunc } = require('../utils/bc')
+const { toWei } = require('../utils/bc')
 
 const balanceInAddress = userId =>
     new Promise((resolve, reject) =>
@@ -134,6 +134,8 @@ const verifyTransfer = (rawTx, from, to, amount) =>
         paramsCheck: [to, amount]
     })
 
+const transfer = userId => db.getUserTransfers(userId)
+
 module.exports = {
     balanceInAddress,
     balanceInContract,
@@ -141,4 +143,5 @@ module.exports = {
     signTransferByUserId,
     verifyTransfer,
     publishTransfer,
+    transfer,
 }

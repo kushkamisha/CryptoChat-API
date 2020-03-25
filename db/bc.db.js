@@ -23,8 +23,12 @@ const lastUnpublishedTxAmountForChat = (from, to) =>
         order by "TransactionAmountWei"::bigint desc
         limit 1;`, [from, to])
 
+const getUserTransfers = userId =>
+    query(``, [userId])
+
 module.exports = {
     getUserAddress,
     saveTransfer,
     lastUnpublishedTxAmountForChat,
+    getUserTransfers,
 }

@@ -1,11 +1,9 @@
-
-
-const { blockchain } = require('../services')
-const { toEth } = require('../utils/blockchain')
+const { bc } = require('../services')
+const { toEth } = require('../utils/bc')
 const logger = require('../logger')
 
 const balanceInAddress = (req, res) => {
-    blockchain.balanceInAddress(req.decoded.userId)
+    bc.balanceInAddress(req.decoded.userId)
         .then(balance => {
             const balanceInEth = toEth(balance)
             logger.debug(`User balance: ${balanceInEth}`)
@@ -22,7 +20,7 @@ const balanceInAddress = (req, res) => {
 }
 
 const balanceInContract = (req, res) => {
-    blockchain.balanceInContract(req.decoded.userId)
+    bc.balanceInContract(req.decoded.userId)
         .then(balance => {
             const balanceInEth = toEth(balance)
             logger.debug(`User balance: ${balanceInEth}`)
@@ -42,7 +40,7 @@ const signTransfer = (req, res) => {
     /**
      * @todo vadidate from, to, amount, prKey
      */
-    blockchain.signTransfer(req.body)
+    bc.signTransfer(req.body)
         .then(tx => {
             logger.debug({ tx })
             res.status(200).send({
@@ -66,7 +64,7 @@ const signTransferByUserId = (req, res) => {
     /**
      * @todo vadidate from, to, amount, prKey
      */
-    blockchain.signTransferByUserId({
+    bc.signTransferByUserId({
         msgId: req.body.msgId,
         fromUserId: req.body.decoded.userId,
         toUserId: req.body.toUserId,
@@ -99,7 +97,7 @@ const publishTransfer = (req, res) => {
      * @todo if try to send the second time - Internal server error
      * (nonce too low)
      */
-    blockchain.publishTransfer(req.body.rawTx)
+    bc.publishTransfer(req.body.rawTx)
         .then(hash => {
             logger.debug({ hash })
             res.status(200).send({
@@ -109,7 +107,6 @@ const publishTransfer = (req, res) => {
         })
         .catch(err => {
             console.error(err)
-            console.log({ err })
             res.sendStatus(500)
         })
 }
@@ -119,7 +116,7 @@ const verifyTransfer = (req, res) => {
      * @todo validate tx, from, to, amount
      */
     const { rawTx, from, to, amount } = req.body
-    const isGood = blockchain.verifyTransfer(rawTx, from, to, amount)
+    const isGood = bc.verifyTransfer(rawTx, from, to, amount)
     if (isGood) {
         res.status(200).send({
             status: 'success',
@@ -133,6 +130,14 @@ const verifyTransfer = (req, res) => {
     }
 }
 
+const transfers = (req, res) =>
+    bc.transfers(req.body.decoded.userId)
+        .then(console.log)
+        .catch(err => {
+            console.error(err)
+            res.sendStatus(500)
+        })
+
 module.exports = {
     balanceInAddress,
     balanceInContract,
@@ -140,4 +145,5 @@ module.exports = {
     signTransferByUserId,
     verifyTransfer,
     publishTransfer,
+    transfers,
 }

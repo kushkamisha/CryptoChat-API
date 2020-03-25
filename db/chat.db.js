@@ -3,10 +3,23 @@ const { query } = require('../utils/db')
 const getPersonalChats = userId =>
     query(`
         select "User"."UserId", "Chat"."ChatId", "ChatType", "FromUser",
-            "ToUser", "FirstName", "LastName", "AvatarBase64"
+            "ToUser", "FirstName", "LastName", "AvatarBase64",
+            "MessageText", "LastMsgs"."CreatedAt"
         from "ChatUser"
         inner join "Chat" on "Chat"."ChatId" = "ChatUser"."ChatId"
         inner join "User" on "User"."UserId" = "ChatUser"."UserId"
+        
+        join (
+        	select "tmp"."ChatId", "MessageText", "CreatedAt" from "ChatMessage"
+			join (
+			select "ChatId", max("ChatMessageId") as "ChatMessageId"
+			from "ChatMessage"
+            where "ChatId" in
+                (select "ChatId" from "ChatUser" where "UserId" = $1)
+			group by "ChatId"
+			) as "tmp" on "ChatMessage"."ChatMessageId" = "tmp"."ChatMessageId"
+        ) as "LastMsgs" on "Chat"."ChatId" = "LastMsgs"."ChatId"
+        
         where "Chat"."ChatId" in (
             select "ChatId" from "ChatUser" where "UserId" = $1
         )

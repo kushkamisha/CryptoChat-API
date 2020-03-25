@@ -1,10 +1,8 @@
-
-
 const abi = require('ethereumjs-abi')
 const txDecoder = require('ethereum-tx-decoder')
 
 const logger = require('../logger')
-const { web3 } = require('../blockchain/singletons')
+const { web3 } = require('../bc/singletons')
 const { Web3Error } = require('../errors')
 
 const toEth = amount => Math.round(amount / 10 ** 13) / 10 ** 5
