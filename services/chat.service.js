@@ -15,7 +15,14 @@ const chatsList = ({ userId }) => new Promise((resolve, reject) =>
                 lastMsgText: x.MessageText,
                 lastMsgTime: x.CreatedAt
             }))
-            resolve(chats)
+            chats = chats.sort(
+                (a, b) => (a.lastMsgTime < b.lastMsgTime ? 1 : -1))
+            chats = chats.map(obj => {
+                obj.lastMsgTime = obj.lastMsgTime.toString().split(' (')[0]
+                return obj
+            })
+            resolve(
+                chats)
         })
         .catch(reject))
 
