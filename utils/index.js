@@ -18,7 +18,6 @@ const constructSuffix = (diff, measurement, suffixes) => {
 }
 
 const dateToLabel = date => {
-    date = new Date('1999-04-05T08:19:00.487Z')
     const curr = new Date()
     console.log({ curr })
     const diff = Math.floor((curr - date) / 1000) // difference in seconds
