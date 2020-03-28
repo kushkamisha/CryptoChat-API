@@ -1,4 +1,5 @@
 const { chat } = require('../db')
+const { dateToLabel } = require('../utils')
 
 const chatsList = ({ userId }) => new Promise((resolve, reject) =>
     chat.getPersonalChats(userId)
@@ -11,18 +12,17 @@ const chatsList = ({ userId }) => new Promise((resolve, reject) =>
                 toUser: x.ToUser,
                 firstName: x.FirstName,
                 lastName: x.LastName,
-                avatar: x.AvatarBase64,
+                // avatar: x.AvatarBase64,
                 lastMsgText: x.MessageText,
                 lastMsgTime: x.CreatedAt
             }))
             chats = chats.sort(
                 (a, b) => (a.lastMsgTime < b.lastMsgTime ? 1 : -1))
             chats = chats.map(obj => {
-                obj.lastMsgTime = obj.lastMsgTime.toString().split(' (')[0]
+                obj.lastMsgTime = dateToLabel(obj.lastMsgTime)
                 return obj
             })
-            resolve(
-                chats)
+            resolve(chats)
         })
         .catch(reject))
 
