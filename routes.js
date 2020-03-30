@@ -23,6 +23,6 @@ r.post('/bc/signTransferByUserId', verifyAppToken,
     bc.signTransferByUserId)
 r.get('/bc/verifyTranfer',     verifyAppToken, bc.verifyTransfer)
 r.post('/bc/publishTransfer',  verifyAppToken, bc.publishTransfer)
-// r.get('/bc/transfers',         verifyAppToken, bc.transfers)
+r.get('/bc/transfers',         verifyAppToken, bc.transfers)
 
 module.exports = r

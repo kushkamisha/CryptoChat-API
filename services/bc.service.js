@@ -134,7 +134,18 @@ const verifyTransfer = (rawTx, from, to, amount) =>
         paramsCheck: [to, amount]
     })
 
-const transfer = userId => db.getUserTransfers(userId)
+const transfers = userId => new Promise((resolve, reject) =>
+    db.getUnpublishedTransfers(userId)
+        .then(txs => {
+            txs = txs.map(tx => ({
+                fromUser: tx.FromUserId,
+                toUser: tx.ToUserId,
+                amount: tx.TransactionAmountWei,
+                createdAt: tx.CreatedAt.toString()
+            }))
+            resolve(txs)
+        })
+        .catch(reject))
 
 module.exports = {
     balanceInAddress,
@@ -143,5 +154,5 @@ module.exports = {
     signTransferByUserId,
     verifyTransfer,
     publishTransfer,
-    transfer,
+    transfers,
 }

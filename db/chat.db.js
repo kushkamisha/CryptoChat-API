@@ -24,7 +24,8 @@ const getPersonalChats = userId =>
             select "ChatId" from "ChatUser" where "UserId" = $1
         )
             and "ChatType" != 'group'
-            and "ChatUser"."UserId" != $1;`, [userId])
+            and "ChatUser"."UserId" != $1
+        order by "LastMsgs"."CreatedAt" desc;`, [userId])
 
 const getMessages = chatId =>
     query(`

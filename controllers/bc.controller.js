@@ -132,7 +132,11 @@ const verifyTransfer = (req, res) => {
 
 const transfers = (req, res) =>
     bc.transfers(req.body.decoded.userId)
-        .then(console.log)
+        .then(txs =>
+            res.status(200).send({
+                status: 'success',
+                txs
+            }))
         .catch(err => {
             console.error(err)
             res.sendStatus(500)
