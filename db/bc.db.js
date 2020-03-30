@@ -25,11 +25,32 @@ const lastUnpublishedTxAmountForChat = (from, to) =>
 
 const getUnpublishedTransfers = userId =>
     query(`
-        select "FromUserId", "ToUserId", "TransactionAmountWei", "CreatedAt"
-        from "Transaction"
-        where ("FromUserId" = $1 or "ToUserId" = $1)
-            and "TransactionStatus" = 'unpublished'
-        order by "CreatedAt" desc;`, [userId])
+        select
+        case
+            when "FromUserId" = $1 then 'out'
+            else 'in'
+        end as "Direction",
+        case
+            when "FromUserId" = $1 then (
+                select concat("FirstName", ' ', "MiddleName", ' ', "LastName")
+                    as "FullName"
+                from "User"
+                where "UserId" = "Transaction"."ToUserId"
+            )
+            else (
+                select concat("FirstName", ' ',
+                              -- "MiddleName", ' ',
+                              "LastName")
+                    as "FullName"
+                from "User"
+                where "UserId" = "Transaction"."FromUserId"
+            )
+        end,
+        "TransactionAmountWei", "CreatedAt"
+    from "Transaction"
+    where ("FromUserId" = $1 or "ToUserId" = $1)
+        and "TransactionStatus" = 'unpublished'
+    order by "CreatedAt" desc;`, [userId])
 
 module.exports = {
     getUserAddress,

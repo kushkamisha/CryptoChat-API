@@ -3,6 +3,7 @@ const db = require('../db/bc.db')
 const { contract } = require('../bc/singletons')
 const logger = require('../logger')
 const { checkSignedFunc } = require('../utils/bc')
+const { getDateTime } = require('../utils')
 const { toWei } = require('../utils/bc')
 
 const balanceInAddress = userId =>
@@ -138,10 +139,10 @@ const transfers = userId => new Promise((resolve, reject) =>
     db.getUnpublishedTransfers(userId)
         .then(txs => {
             txs = txs.map(tx => ({
-                fromUser: tx.FromUserId,
-                toUser: tx.ToUserId,
-                amount: tx.TransactionAmountWei,
-                createdAt: tx.CreatedAt.toString()
+                fullName: tx.FullName,
+                direction: tx.Direction,
+                amount: `${tx.TransactionAmountWei / 10 ** 18}`,
+                createdAt: getDateTime(tx.CreatedAt)
             }))
             resolve(txs)
         })
