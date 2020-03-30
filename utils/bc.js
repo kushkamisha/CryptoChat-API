@@ -41,7 +41,7 @@ const checkSignedFunc = ({ rawTx, from, func, params, paramsCheck }) => {
     // Is called a required function?
     if (web3.utils.sha3(signature).substr(0, 10) !== args[0]) return false
     if (paramsCheck[0].toLowerCase() !== `0x${args[1]}`) return false
-    if (paramsCheck[1] !== parseInt(args[2].toString())) return false
+    if (parseInt(paramsCheck[1]) !== parseInt(args[2].toString())) return false
 
     return true
 }

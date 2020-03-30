@@ -47,6 +47,8 @@ const signTransfer = ({ from, to, amount, prKey }) =>
                     func: 'transfer'
                 })
 
+                console.log({ isGood })
+
                 if (isGood) resolve(tx)
                 else reject()
             })
@@ -111,19 +113,23 @@ const signTransferByUserId = ({ msgId, fromUserId, toUserId, amount, prKey }) =>
             .then(([, fullAmount, tx]) => resolve([fullAmount, tx]))
             .catch(reject))
 
-const publishTransfer = rawTx =>
+const publishTransfer = txId =>
     new Promise((resolve, reject) => {
-        console.log({ rawTx })
-        web3.eth.sendSignedTransaction(rawTx)
-            .once('transactionHash', hash => {
-                logger.debug(`Transaction hash: ${hash}`)
-                resolve(hash)
+        db.getRawTxById(txId)
+            .then(({ RawTransaction: rawTx }) => {
+                console.log({ rawTx })
+                web3.eth.sendSignedTransaction(rawTx)
+                    .once('transactionHash', hash => {
+                        logger.debug(`Transaction hash: ${hash}`)
+                        resolve(hash)
+                    })
+                    // .on('confirmation', (confNumber, receipt) => {
+                    //     console.log(`Confiramation number: ${confNumber}`)
+                    //     console.log(`Tx hash: ${receipt.transactionHash}`)
+                    // })
+                    .on('error', reject)
             })
-            // .on('confirmation', (confNumber, receipt) => {
-            //     console.log(`Confiramation number: ${confNumber}`)
-            //     console.log(`Transaction hash: ${receipt.transactionHash}`)
-            // })
-            .on('error', reject)
+            .catch(reject)
     })
 
 const verifyTransfer = (rawTx, from, to, amount) =>
@@ -139,6 +145,7 @@ const transfers = userId => new Promise((resolve, reject) =>
     db.getUnpublishedTransfers(userId)
         .then(txs => {
             txs = txs.map(tx => ({
+                txId: tx.TransactionId,
                 fullName: tx.FullName,
                 direction: tx.Direction,
                 amount: `${tx.TransactionAmountWei / 10 ** 18}`,

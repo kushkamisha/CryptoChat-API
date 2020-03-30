@@ -14,6 +14,12 @@ const saveTransfer = (from, to, msgId, amount, tx) =>
         ) values ($1, $2, $3, $4, $5)`,
     [from, to, msgId, amount, tx])
 
+const getRawTxById = txId =>
+    query(`
+        select "RawTransaction"
+        from "Transaction"
+        where "TransactionId" = $1;`, [txId])
+
 const lastUnpublishedTxAmountForChat = (from, to) =>
     query(`
         select "TransactionAmountWei" from "Transaction"
@@ -46,7 +52,7 @@ const getUnpublishedTransfers = userId =>
                 where "UserId" = "Transaction"."FromUserId"
             )
         end,
-        "TransactionAmountWei", "CreatedAt"
+        "TransactionAmountWei", "CreatedAt", "TransactionId"
     from "Transaction"
     where ("FromUserId" = $1 or "ToUserId" = $1)
         and "TransactionStatus" = 'unpublished'
@@ -55,6 +61,7 @@ const getUnpublishedTransfers = userId =>
 module.exports = {
     getUserAddress,
     saveTransfer,
+    getRawTxById,
     lastUnpublishedTxAmountForChat,
     getUnpublishedTransfers,
 }

@@ -1,4 +1,3 @@
-const logger = require('./logger')
 const crypto = require('./utils/crypto')
 const { verifyToken } = require('./utils/crypto')
 

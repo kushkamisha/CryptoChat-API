@@ -20,7 +20,7 @@ const balanceInAddress = (req, res) => {
 }
 
 const balanceInContract = (req, res) => {
-    bc.balanceInContract(req.decoded.userId)
+    bc.balanceInContract(req.body.decoded.userId)
         .then(balance => {
             const balanceInEth = toEth(balance)
             logger.debug(`User balance: ${balanceInEth}`)
@@ -97,7 +97,7 @@ const publishTransfer = (req, res) => {
      * @todo if try to send the second time - Internal server error
      * (nonce too low)
      */
-    bc.publishTransfer(req.body.rawTx)
+    bc.publishTransfer(req.body.txId)
         .then(hash => {
             logger.debug({ hash })
             res.status(200).send({
@@ -117,6 +117,7 @@ const verifyTransfer = (req, res) => {
      */
     const { rawTx, from, to, amount } = req.body
     const isGood = bc.verifyTransfer(rawTx, from, to, amount)
+    console.log({ isGood })
     if (isGood) {
         res.status(200).send({
             status: 'success',
