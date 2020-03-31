@@ -9,10 +9,9 @@ const { toWei } = require('../utils/bc')
 const balanceInAddress = userId =>
     new Promise((resolve, reject) =>
         db.getUserAddress(userId)
-            .then(res => {
-                const address = res[0].Address
-                logger.debug(`User address: ${address}`)
-                return web3.eth.getBalance(address)
+            .then(([{ Address: addr }]) => {
+                logger.debug(`User address: ${addr}`)
+                return web3.eth.getBalance(addr)
             })
             .then(balance => resolve(balance))
             .catch(err => {
@@ -33,6 +32,22 @@ const balanceInContract = userId =>
                 console.error({ err })
                 reject(err)
             }))
+
+const replenishContract = ({ userId, amountEth, prKey }) =>
+    new Promise((resolve, reject) =>
+        db.getUserAddress(userId)
+            .then(([{ Address: addr }]) =>
+                contract.deposit(addr, prKey, toWei(amountEth)))
+            .then(({ rawTransaction }) => {
+                console.log({ rawTransaction })
+                web3.eth.sendSignedTransaction(rawTransaction)
+                    .once('transactionHash', hash => {
+                        logger.debug(`Transaction hash: ${hash}`)
+                        resolve(hash)
+                    })
+                    .on('error', reject)
+            })
+            .catch(reject))
 
 const signTransfer = ({ from, to, amount, prKey }) =>
     new Promise((resolve, reject) =>
@@ -105,29 +120,38 @@ const signTransferByUserId = ({ msgId, fromUserId, toUserId, amount, prKey }) =>
                             fullAmount,
                             tx.rawTransaction
                         ),
+                        db.setAllTxsAsOutdated(fromUserId, toUserId),
                         fullAmount,
                         tx
                     ])
                 } else reject(new Error('The transaction is not valid'))
             })
-            .then(([, fullAmount, tx]) => resolve([fullAmount, tx]))
+            .then(([,, fullAmount, tx]) => resolve([fullAmount, tx]))
             .catch(reject))
 
 const publishTransfer = txId =>
     new Promise((resolve, reject) => {
         db.getRawTxById(txId)
-            .then(({ RawTransaction: rawTx }) => {
-                console.log({ rawTx })
-                web3.eth.sendSignedTransaction(rawTx)
-                    .once('transactionHash', hash => {
-                        logger.debug(`Transaction hash: ${hash}`)
-                        resolve(hash)
-                    })
-                    // .on('confirmation', (confNumber, receipt) => {
-                    //     console.log(`Confiramation number: ${confNumber}`)
-                    //     console.log(`Tx hash: ${receipt.transactionHash}`)
-                    // })
-                    .on('error', reject)
+            .then(([{ TransactionStatus: status, RawTransaction: rawTx }]) => {
+                console.log({ status, rawTx })
+                if (status !== 'unpublished')
+                    reject(new Error('The tx status differs from unpublished'))
+                else
+                    web3.eth.sendSignedTransaction(rawTx)
+                        .once('transactionHash', hash => {
+                            logger.debug(`Transaction hash: ${hash}`)
+                            // Change db tx status to mining
+                            db.changeTxStatusTo('mining', txId)
+                            resolve(hash)
+                        })
+                        .on('confirmation', (confNumber, receipt) => {
+                            console.log(`Confiramation number: ${confNumber}`)
+                            console.log(`Tx hash: ${receipt.transactionHash}`)
+                            // Change db tx status to mined
+                            db.changeTxStatusTo('mined', txId)
+                            return
+                        })
+                        .on('error', reject)
             })
             .catch(reject)
     })
@@ -158,6 +182,7 @@ const transfers = userId => new Promise((resolve, reject) =>
 module.exports = {
     balanceInAddress,
     balanceInContract,
+    replenishContract,
     signTransfer,
     signTransferByUserId,
     verifyTransfer,

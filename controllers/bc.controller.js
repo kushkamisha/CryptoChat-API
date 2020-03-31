@@ -3,7 +3,7 @@ const { toEth } = require('../utils/bc')
 const logger = require('../logger')
 
 const balanceInAddress = (req, res) => {
-    bc.balanceInAddress(req.decoded.userId)
+    bc.balanceInAddress(req.body.decoded.userId)
         .then(balance => {
             const balanceInEth = toEth(balance)
             logger.debug(`User balance: ${balanceInEth}`)
@@ -28,6 +28,25 @@ const balanceInContract = (req, res) => {
                 status: 'success',
                 currency: 'ETH',
                 balanceInEth
+            })
+        })
+        .catch(err => {
+            console.error(err)
+            res.sendStatus(500)
+        })
+}
+
+const replenishContract = (req, res) => {
+    bc.replenishContract({
+        userId: req.body.decoded.userId,
+        amountEth: parseFloat(req.body.amountEth),
+        prKey: req.body.prKey
+    })
+        .then(hash => {
+            logger.debug({ hash })
+            res.status(200).send({
+                status: 'mining...',
+                txHash: hash
             })
         })
         .catch(err => {
@@ -91,26 +110,6 @@ const signTransferByUserId = (req, res) => {
         })
 }
 
-const publishTransfer = (req, res) => {
-    /**
-     * @todo validate rawTx
-     * @todo if try to send the second time - Internal server error
-     * (nonce too low)
-     */
-    bc.publishTransfer(req.body.txId)
-        .then(hash => {
-            logger.debug({ hash })
-            res.status(200).send({
-                status: 'mining...',
-                txHash: hash
-            })
-        })
-        .catch(err => {
-            console.error(err)
-            res.sendStatus(500)
-        })
-}
-
 const verifyTransfer = (req, res) => {
     /**
      * @todo validate tx, from, to, amount
@@ -131,6 +130,26 @@ const verifyTransfer = (req, res) => {
     }
 }
 
+const publishTransfer = (req, res) => {
+    /**
+     * @todo validate rawTx
+     * @todo if try to send the second time - Internal server error
+     * (nonce too low)
+     */
+    bc.publishTransfer(req.body.txId)
+        .then(hash => {
+            logger.debug({ hash })
+            res.status(200).send({
+                status: 'mining...',
+                txHash: hash
+            })
+        })
+        .catch(err => {
+            console.error(err)
+            res.sendStatus(500)
+        })
+}
+
 const transfers = (req, res) =>
     bc.transfers(req.body.decoded.userId)
         .then(txs =>
@@ -146,6 +165,7 @@ const transfers = (req, res) =>
 module.exports = {
     balanceInAddress,
     balanceInContract,
+    replenishContract,
     signTransfer,
     signTransferByUserId,
     verifyTransfer,

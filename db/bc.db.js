@@ -11,12 +11,20 @@ const saveTransfer = (from, to, msgId, amount, tx) =>
             "ForMessageId",
             "TransactionAmountWei",
             "RawTransaction"
-        ) values ($1, $2, $3, $4, $5)`,
+        ) values ($1, $2, $3, $4, $5);`,
     [from, to, msgId, amount, tx])
+
+const setAllTxsAsOutdated = (fromUser, toUser) =>
+    query(`
+        update "Transaction"
+        set "TransactionStatus" = 'outdated'
+        where "FromUserId" = $1 and
+            "ToUserId" = $2 and
+            "TransactionStatus" = 'unpublished';`, [fromUser, toUser])
 
 const getRawTxById = txId =>
     query(`
-        select "RawTransaction"
+        select "TransactionStatus", "RawTransaction"
         from "Transaction"
         where "TransactionId" = $1;`, [txId])
 
@@ -58,10 +66,18 @@ const getUnpublishedTransfers = userId =>
         and "TransactionStatus" = 'unpublished'
     order by "CreatedAt" desc;`, [userId])
 
+const changeTxStatusTo = (status, txId) =>
+    query(`
+        update "Transaction"
+        set "TransactionStatus" = $1
+        where "TransactionId" = $2;`, [status, txId])
+
 module.exports = {
     getUserAddress,
+    setAllTxsAsOutdated,
     saveTransfer,
     getRawTxById,
     lastUnpublishedTxAmountForChat,
     getUnpublishedTransfers,
+    changeTxStatusTo,
 }
