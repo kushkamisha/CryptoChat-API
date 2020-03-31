@@ -34,6 +34,17 @@ const getMessages = chatId =>
         where "ChatId" = $1
         order by "CreatedAt";`, [chatId])
 
+const getTotalAmount = chatId =>
+    query(`
+        select "TransactionAmountWei" from "Transaction"
+        join (
+            select "FromUser", "ToUser"
+            from "Chat"
+            where "ChatId" = $1
+        ) as "tmp"
+        on "FromUserId" = "tmp"."FromUser" and "ToUserId" = "tmp"."ToUser"
+        where "TransactionStatus" = 'unpublished';`, [chatId])
+
 const getUnreadMessages = (chatId, userId) =>
     query(`
         select "UserId", "MessageText", "CreatedAt"
@@ -65,6 +76,7 @@ const readMessages = (chatId, userId) =>
 module.exports = {
     getPersonalChats,
     getMessages,
+    getTotalAmount,
     getUnreadMessages,
     addMessage,
     getMessageById,

@@ -19,9 +19,10 @@ const chatsList = (req, res) => {
 
 const messages = (req, res) => {
     chat.messages(req.query.chatId)
-        .then(messages => {
+        .then(([amount, messages]) => {
             res.status(200).send({
                 status: 'success',
+                amount,
                 messages
             })
         })

@@ -1,5 +1,6 @@
 const { chat } = require('../db')
 const { dateToLabel } = require('../utils')
+const { toEth } = require('../utils/bc')
 
 const chatsList = ({ userId }) => new Promise((resolve, reject) =>
     chat.getPersonalChats(userId)
@@ -25,8 +26,11 @@ const chatsList = ({ userId }) => new Promise((resolve, reject) =>
         .catch(reject))
 
 const messages = chatId => new Promise((resolve, reject) =>
-    chat.getMessages(chatId)
-        .then(msgs => {
+    Promise.all([
+        chat.getTotalAmount(chatId),
+        chat.getMessages(chatId)
+    ])
+        .then(([totalAmount, msgs ]) => {
             msgs = msgs.map(x => ({
                 msgId: x.ChatMessageId,
                 userId: x.UserId,
@@ -34,7 +38,10 @@ const messages = chatId => new Promise((resolve, reject) =>
                 isRead: x.IsRead,
                 time: `${x.CreatedAt}`.slice(16, 21)
             }))
-            resolve(msgs)
+            if (totalAmount.length)
+                resolve([toEth(totalAmount[0].TransactionAmountWei), msgs])
+            else
+                resolve([undefined, msgs])
         })
         .catch(reject))
 
