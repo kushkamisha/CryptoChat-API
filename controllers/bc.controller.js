@@ -137,7 +137,11 @@ const publishTransfer = (req, res) => {
      * @todo if try to send the second time - Internal server error
      * (nonce too low)
      */
-    bc.publishTransfer(req.body.txId)
+    bc.publishTransfer({
+        userId: req.body.decoded.userId,
+        txId: req.body.txId,
+        socket: req.io
+    })
         .then(hash => {
             logger.debug({ hash })
             res.status(200).send({

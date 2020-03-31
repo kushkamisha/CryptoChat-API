@@ -129,7 +129,7 @@ const signTransferByUserId = ({ msgId, fromUserId, toUserId, amount, prKey }) =>
             .then(([,, fullAmount, tx]) => resolve([fullAmount, tx]))
             .catch(reject))
 
-const publishTransfer = txId =>
+const publishTransfer = ({ userId, txId, socket }) =>
     new Promise((resolve, reject) => {
         db.getRawTxById(txId)
             .then(([{ TransactionStatus: status, RawTransaction: rawTx }]) => {
@@ -147,6 +147,9 @@ const publishTransfer = txId =>
                         .once('confirmation', (confNumber, receipt) => {
                             console.log(`Confiramation number: ${confNumber}`)
                             console.log(`Tx hash: ${receipt.transactionHash}`)
+
+                            socket.emit('tx-confirmed', ({ userId, txId }))
+
                             // Change db tx status to mined
                             db.changeTxStatusTo('mined', txId)
                         })

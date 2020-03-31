@@ -22,7 +22,7 @@ const messages = (req, res) => {
         .then(([amount, messages]) => {
             res.status(200).send({
                 status: 'success',
-                amount,
+                amount: `${amount}`,
                 messages
             })
         })
