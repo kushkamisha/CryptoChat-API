@@ -145,10 +145,11 @@ const publishTransfer = ({ userId, txId, socket }) =>
                             resolve(hash)
                         })
                         .once('confirmation', (confNumber, receipt) => {
+                            const txHash = receipt.transactionHash
                             console.log(`Confiramation number: ${confNumber}`)
-                            console.log(`Tx hash: ${receipt.transactionHash}`)
+                            console.log(`Tx hash: ${txHash}`)
 
-                            socket.emit('tx-confirmed', ({ userId, txId }))
+                            socket.emit('tx-confirmed', ({ userId, txHash }))
 
                             // Change db tx status to mined
                             db.changeTxStatusTo('mined', txId)
