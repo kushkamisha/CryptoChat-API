@@ -22,7 +22,7 @@ const messages = (req, res) => {
         .then(([amount, messages]) => {
             res.status(200).send({
                 status: 'success',
-                amount: `${amount}`,
+                amount: amount ? `${amount}` : undefined,
                 messages
             })
         })
@@ -52,13 +52,25 @@ const unreadMessages = (req, res) => {
         })
 }
 
+const totalEthAmount = (req, res) =>
+    chat.totalEthAmount(req.query.chatId)
+        .then(amount =>
+            res.status(200).send({
+                status: 'success',
+                amount
+            }))
+        .catch(err => {
+            console.error(err)
+            res.sendStatus(500)
+        })
+
 const addMessage = (req, res) => {
     chat.addMessage({
         chatId: req.body.chatId,
         userId: req.body.decoded.userId,
         text: req.body.message
     })
-        .then(({ chatMsgId, createdAt, chatUsers }) => {
+        .then(({ chatMsgId, createdAt, chatUsers, amount }) => {
             // req.io.emitSmart(chatUsers, 'new-message', ({
             //     userId: req.body.decoded.userId,
             //     message: req.body.message,
@@ -70,6 +82,7 @@ const addMessage = (req, res) => {
                 userId: req.body.decoded.userId,
                 chatId: req.body.chatId,
                 message: req.body.message,
+                amount,
                 createdAt
             }))
             res.status(200).send({
@@ -101,6 +114,7 @@ module.exports = {
     chatsList,
     messages,
     unreadMessages,
+    totalEthAmount,
     addMessage,
     readMessages,
 }

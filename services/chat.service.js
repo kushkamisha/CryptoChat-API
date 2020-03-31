@@ -57,30 +57,46 @@ const unreadMessages = (chatId, userId) => new Promise((resolve, reject) =>
         })
         .catch(reject))
 
+const totalEthAmount = chatId => new Promise((resolve, reject) =>
+    chat.getTotalAmount(chatId)
+        .then(totalAmount =>
+            resolve(totalAmount.length ?
+                `${toEth(totalAmount[0].TransactionAmountWei)}` : 0))
+        .catch(reject))
 
 const addMessage = ({ chatId, userId, text }) =>
     new Promise((resolve, reject) =>
         Promise.all([
             chat.addMessage(chatId, userId, text),
-            chat.getChatUsers(chatId)
+            chat.getChatUsers(chatId),
+            chat.getTotalAmount(chatId)
         ])
-            .then(([[{ CreatedAt, ChatMessageId }], chatUsers]) => {
+            .then(([
+                [{ CreatedAt, ChatMessageId }],
+                chatUsers,
+                totalAmount
+            ]) => {
+                const amount = totalAmount.length ?
+                    `${toEth(totalAmount[0].TransactionAmountWei)}` :
+                    undefined
                 resolve({
                     chatMsgId: ChatMessageId,
                     createdAt: `${CreatedAt}`.slice(16, 21),
-                    chatUsers
+                    chatUsers,
+                    amount
                 })
             })
             .catch(reject))
 
-const readMessages = (chatId, userId) => chat.readMessages(chatId, userId)
-
 const getMessageById = msgId => chat.getMessageById(msgId)
+
+const readMessages = (chatId, userId) => chat.readMessages(chatId, userId)
 
 module.exports = {
     chatsList,
     messages,
     unreadMessages,
+    totalEthAmount,
     addMessage,
     getMessageById,
     readMessages,

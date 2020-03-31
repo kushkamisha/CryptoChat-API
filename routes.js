@@ -13,6 +13,7 @@ r.get('/auth/myProfile',           verifyAppToken, auth.myProfile)
 r.get('/chat/chatList',            verifyAppToken, chat.chatsList)
 r.get('/chat/messages',            verifyAppToken, chat.messages)
 r.get('/chat/unreadMessages',      verifyAppToken, chat.unreadMessages)
+r.get('/chat/totalEthAmount',      verifyAppToken, chat.totalEthAmount)
 r.post('/chat/message',            verifyAppToken, chat.addMessage)
 r.post('/chat/readMessages',       verifyAppToken, chat.readMessages)
 

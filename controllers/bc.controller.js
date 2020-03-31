@@ -20,7 +20,6 @@ const balanceInAddress = (req, res) => {
 }
 
 const balanceInContract = (req, res) => {
-    console.log(req.body.decoded.userId)
     bc.balanceInContract(req.body.decoded.userId)
         .then(balance => {
             const balanceInEth = toEth(balance)
@@ -93,6 +92,11 @@ const signTransferByUserId = (req, res) => {
     })
         .then(([totalAmount, tx]) => {
             logger.debug({ totalAmount, tx })
+            req.io.emit('upd-amount', ({
+                fromUserId: req.body.decoded.userId,
+                toUserId: req.body.toUserId,
+                amount: `${toEth(totalAmount)}`
+            }))
             res.status(200).send({
                 status: 'success',
                 rawTx: tx.rawTransaction,
