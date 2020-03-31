@@ -20,6 +20,7 @@ const balanceInAddress = (req, res) => {
 }
 
 const balanceInContract = (req, res) => {
+    console.log(req.body.decoded.userId)
     bc.balanceInContract(req.body.decoded.userId)
         .then(balance => {
             const balanceInEth = toEth(balance)

@@ -144,14 +144,13 @@ const publishTransfer = txId =>
                             db.changeTxStatusTo('mining', txId)
                             resolve(hash)
                         })
-                        .on('confirmation', (confNumber, receipt) => {
+                        .once('confirmation', (confNumber, receipt) => {
                             console.log(`Confiramation number: ${confNumber}`)
                             console.log(`Tx hash: ${receipt.transactionHash}`)
                             // Change db tx status to mined
                             db.changeTxStatusTo('mined', txId)
-                            return
                         })
-                        .on('error', reject)
+                        .once('error', reject)
             })
             .catch(reject)
     })

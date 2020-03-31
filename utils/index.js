@@ -56,14 +56,14 @@ const dateToLabel = date => {
 const getDateTime = d => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
         'Sep', 'Oct', 'Nov', 'Dec']
-    let res = `${d.getDay()} ${months[d.getMonth()]} ${d.getFullYear()}`
+    let res = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`
     res += ` ${d.getHours().toString().length === 1 ?
         '0' + d.getHours() : d.getHours()}:`
     res += `${d.getMinutes().toString().length === 1 ?
         '0' + d.getMinutes() : d.getMinutes()}:`
     res += `${d.getSeconds().toString().length === 1 ?
         '0' + d.getSeconds() : d.getSeconds()}`
-    
+
     return res
 }
 
