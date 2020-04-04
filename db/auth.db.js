@@ -11,13 +11,14 @@ const checkUniqueness = email => new Promise((resolve, reject) =>
         .catch(err => reject(err)))
 
 const registerUser = (email, firstName, middleName, lastName, birthDate,
-    description, pass) =>
+    description, avatar, pass) =>
     query(`
         insert into "User" (
             "Email", "FirstName", "MiddleName", "LastName",
-            "BirthDate", "Description", "PasswordHash"
-        ) values ($1, $2, $3, $4, $5, $6, $7) returning "UserId"`,
-    [email, firstName, middleName, lastName, birthDate, description, pass])
+            "BirthDate", "Description", "AvatarBase64", "PasswordHash"
+        ) values ($1, $2, $3, $4, $5, $6, $7, $8) returning "UserId"`,
+    [email, firstName, middleName, lastName, birthDate, description, avatar,
+        pass])
 
 const setUserKeywords = (userId, keywords) => new Promise((resolve, reject) => {
     const queries = []

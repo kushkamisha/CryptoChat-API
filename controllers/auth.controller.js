@@ -4,7 +4,7 @@ const logger = require('../logger')
 
 const register = (req, res, next) => {
     const {
-        email, pass, firstName, middleName, lastName, birthDate,
+        email, pass, firstName, middleName, lastName, avatar, birthDate,
         keywords, description
     } = req.body
 
@@ -13,8 +13,8 @@ const register = (req, res, next) => {
     const keywordsArr = keywords ? keywords.split(',').map(x => x.trim()) : []
 
     auth.register(
-        email, pass, firstName, middleName, lastName, birthDate,
-        keywordsArr, description
+        email, pass, firstName, middleName, lastName, birthDate, keywordsArr,
+        description, avatar
     )
         .then(({ userId, address, prKey }) => {
             logger.info(`Register result: ${!!userId}. User id: ${userId}`)

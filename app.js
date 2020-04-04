@@ -8,7 +8,7 @@ const app = express()
 const server = require('http').createServer(app)
 const io = new (require('./utils/socket'))(server)
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '5mb' }))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use((req, res, next) => { req.io = io; next() })
 

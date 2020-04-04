@@ -4,7 +4,7 @@ const { BreakPromiseChainError } = require('../errors')
 const logger = require('../logger')
 
 const register = (email, pass, firstName, middleName, lastName, birthDate,
-    keywords, description) =>
+    keywords, description, avatar) =>
     new Promise((resolve, reject) =>
         hash(pass)
             .then(passwordHash => {
@@ -13,6 +13,7 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
                 if (!lastName) lastName = undefined
                 if (!birthDate) birthDate = undefined
                 if (!description) description = undefined
+                if (!avatar) avatar = undefined
 
                 logger.debug({ passwordHash })
 
@@ -31,6 +32,7 @@ const register = (email, pass, firstName, middleName, lastName, birthDate,
                         lastName,
                         birthDate,
                         description,
+                        avatar,
                         passwordHash
                     ))
                     .then(res => {
