@@ -29,9 +29,11 @@ const getPersonalChats = userId =>
 
 const getMessages = chatId =>
     query(`
-        select "ChatMessageId", "UserId", "MessageText", "IsRead", "CreatedAt"
+        select "ChatMessageId", "ChatUser"."UserId", "MessageText", "IsRead",
+            "CreatedAt"
         from "ChatMessage"
-        where "ChatId" = $1
+        join "ChatUser" on "ChatUserId" = "ChatMessage"."UserId"
+        where "ChatMessage"."ChatId" = $1
         order by "CreatedAt";`, [chatId])
 
 const getTotalAmount = chatId =>
@@ -55,8 +57,13 @@ const getUnreadMessages = (chatId, userId) =>
 const addMessage = (chatId, userId, text) =>
     query(`
         insert into "ChatMessage"("ChatId", "UserId", "MessageText")
-        values ($1, $2, $3)
-        returning "CreatedAt", "ChatMessageId";`, [chatId, userId, text])
+        values (
+            $1, (
+                select "ChatUserId" from "ChatUser"
+                where "ChatId" = $1 and "UserId" = $2
+            ),
+            $3
+        ) returning "CreatedAt", "ChatMessageId";`, [chatId, userId, text])
 
 const getMessageById = id =>
     query(`

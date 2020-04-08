@@ -64,8 +64,9 @@ const totalEthAmount = chatId => new Promise((resolve, reject) =>
                 `${toEth(totalAmount[0].TransactionAmountWei)}` : 0))
         .catch(reject))
 
-const addMessage = ({ chatId, userId, text }) =>
-    new Promise((resolve, reject) =>
+const addMessage = ({ chatId, userId, text }) => {
+    console.log({ chatId, userId, text })
+    return new Promise((resolve, reject) =>
         Promise.all([
             chat.addMessage(chatId, userId, text),
             chat.getChatUsers(chatId),
@@ -87,6 +88,7 @@ const addMessage = ({ chatId, userId, text }) =>
                 })
             })
             .catch(reject))
+        }
 
 const getMessageById = msgId => chat.getMessageById(msgId)
 
