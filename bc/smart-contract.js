@@ -10,7 +10,7 @@ module.exports = class Contract {
         this.abi = JSON.parse(
             fs.readFileSync(path.join(__dirname, abi)))
         this.address = address
-        this.gas = 5000000 // 2000000
+        this.gas = 2000000
         this.contract = new web3.eth.Contract(this.abi, this.address)
     }
 

@@ -22,7 +22,7 @@ const balanceInAddress = (req, res) => {
 const balanceInContract = (req, res) => {
     bc.balanceInContract(req.body.decoded.userId)
         .then(balance => {
-            const balanceInEth = toEth(balance)
+            const balanceInEth = `${toEth(balance)}`
             logger.debug(`User balance: ${balanceInEth}`)
             res.status(200).send({
                 status: 'success',
