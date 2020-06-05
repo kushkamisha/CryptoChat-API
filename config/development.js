@@ -1,5 +1,3 @@
-
-
 module.exports = {
     env: 'development',
     port: process.env.DEV_APP_PORT,

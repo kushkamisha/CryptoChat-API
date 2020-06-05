@@ -1,9 +1,3 @@
-/**
- * Should be replaced with custom logger
- */
-
-
-
 const { createLogger, format, transports } = require('winston')
 require('winston-daily-rotate-file')
 const config = require('./config')

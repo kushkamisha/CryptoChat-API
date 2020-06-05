@@ -1,5 +1,3 @@
-
-
 const { bc } = require('../../config')
 const path = require('path')
 const Contract = require('../smart-contract')

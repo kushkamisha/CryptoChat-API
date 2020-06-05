@@ -1,6 +1,6 @@
 {
   "name": "crypto-chat",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Chatting app based on ethereum micropayments",
   "main": "app.js",
   "scripts": {
