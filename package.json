@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^3.0.8",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "ethereum-tx-decoder": "^3.0.0",
@@ -21,15 +21,15 @@
     "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "node-postgres": "^0.1.2",
+    "node-postgres": "^0.1.4",
     "pg": "^7.18.2",
     "socket.io": "^2.3.0",
     "sodium": "^3.0.2",
-    "web3": "^1.2.5-rc.0",
-    "winston": "^3.2.1",
-    "winston-daily-rotate-file": "^4.4.1"
+    "web3": "^1.2.11",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.4"
   }
 }

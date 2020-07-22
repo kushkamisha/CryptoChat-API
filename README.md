@@ -7,4 +7,4 @@ In order to ensure that the application runs successfully, it is enough to expla
 **KEYWORDS: BLOCKCHAIN TECHNOLOGY, MICROTRANSACTION, ETHEREUM, CONSULTING, MESSENGER, IOS**
 
 ## iPadOS application
-<a href="https://github.com/kushkamisha/CryptoChat-iOS" target="_blank">Go to kushkamisha/Crypto-Chat-iOS</a>
+[Go to kushkamisha/Crypto-Chat-iOS](https://github.com/kushkamisha/CryptoChat-iOS){:target="_blank"}
