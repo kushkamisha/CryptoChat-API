@@ -17,8 +17,8 @@ const registerUser = (email, firstName, middleName, lastName, birthDate,
             "Email", "FirstName", "MiddleName", "LastName",
             "BirthDate", "Description", "AvatarBase64", "PasswordHash"
         ) values ($1, $2, $3, $4, $5, $6, $7, $8) returning "UserId"`,
-    [email, firstName, middleName, lastName, birthDate, description, avatar,
-        pass])
+        [email, firstName, middleName, lastName, birthDate, description, avatar,
+            pass])
 
 const setUserKeywords = (userId, keywords) => new Promise((resolve, reject) => {
     const queries = []
@@ -27,7 +27,7 @@ const setUserKeywords = (userId, keywords) => new Promise((resolve, reject) => {
         queries.push(query(`
             insert into "UserKeyword" ("UserId", "UserKeyword")
             values ($1, $2)`,
-        [userId, keyword])))
+            [userId, keyword])))
 
     Promise.all(queries)
         .then(() => resolve(userId))
