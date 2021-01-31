@@ -77,14 +77,14 @@ const addMessage = (req, res) => {
             //     createdAt
             // }))
             console.log({ chatMsgId })
-            req.io.emit('new-message', ({
-                msgId: chatMsgId,
-                userId: req.body.decoded.userId,
-                chatId: req.body.chatId,
-                message: req.body.message,
-                amount,
-                createdAt
-            }))
+            // req.io.emit('new-message', ({
+            //     msgId: chatMsgId,
+            //     userId: req.body.decoded.userId,
+            //     chatId: req.body.chatId,
+            //     message: req.body.message,
+            //     amount,
+            //     createdAt
+            // }))
             res.status(200).send({
                 status: 'success',
                 createdAt

@@ -92,11 +92,11 @@ const signTransferByUserId = (req, res) => {
     })
         .then(([totalAmount, tx]) => {
             logger.debug({ totalAmount, tx })
-            req.io.emit('upd-amount', ({
-                fromUserId: req.body.decoded.userId,
-                toUserId: req.body.toUserId,
-                amount: `${toEth(totalAmount)}`
-            }))
+            // req.io.emit('upd-amount', ({
+            //     fromUserId: req.body.decoded.userId,
+            //     toUserId: req.body.toUserId,
+            //     amount: `${toEth(totalAmount)}`
+            // }))
             res.status(200).send({
                 status: 'success',
                 rawTx: tx.rawTransaction,

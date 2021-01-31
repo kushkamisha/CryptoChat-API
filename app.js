@@ -6,13 +6,13 @@ const config = require('./config')
 const port = config.port || 3000
 const app = express()
 const server = require('http').createServer(app)
-const io = new (require('./utils/socket'))(server)
+// const io = new (require('./utils/socket'))(server)
 
 app.use(bodyParser.json({ limit: '5mb' }))
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use((req, res, next) => { req.io = io; next() })
+// app.use((req, res, next) => { next() })
 
 app.use('/', routes)
-io.start()
+// io.start()
 
 server.listen(port, () => console.log(`Example app listening on port ${port}!`))
